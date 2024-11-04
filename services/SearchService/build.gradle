@@ -1,0 +1,49 @@
+plugins {
+	id 'java'
+	id 'org.springframework.boot' version '3.3.5'
+	id 'io.spring.dependency-management' version '1.1.6'
+}
+
+group = 'kyobo.cda'
+version = '0.0.1-SNAPSHOT'
+
+java {
+	toolchain {
+		languageVersion = JavaLanguageVersion.of(17)
+	}
+}
+
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+}
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	compileOnly 'org.projectlombok:lombok'
+	annotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+	// aws
+	implementation group: 'software.amazon.awssdk', name: 'opensearch', version: '2.27.24'
+	implementation 'software.amazon.awssdk:auth:2.27.24'
+
+	// opensearch
+	implementation 'org.opensearch.client:opensearch-rest-high-level-client:2.17.0'
+
+	// apache
+	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
+
+	// log
+	implementation 'net.logstash.logback:logstash-logback-encoder:7.2'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
