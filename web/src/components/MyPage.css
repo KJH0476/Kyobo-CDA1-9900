@@ -1,0 +1,82 @@
+/* MyPage.css */
+
+.mypage-container {
+  padding: 80px 20px 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.reservation-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+  margin-bottom: 15px;
+  transition: all 0.2s;
+}
+
+.reservation-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.reservation-info {
+  flex: 1;
+}
+
+.reservation-info h3 {
+  margin: 0 0 10px 0;
+  color: #333;
+}
+
+.reservation-info p {
+  margin: 5px 0;
+  color: #666;
+}
+
+.delete-button {
+  padding: 8px 16px;
+  background-color: #ff4444;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.delete-button:hover {
+  background-color: #ff1111;
+  transform: translateY(-2px);
+}
+
+.no-reservations {
+  text-align: center;
+  color: #666;
+  padding: 20px;
+}
+
+.user-info {
+  background: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin-bottom: 30px;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+h1,
+h2 {
+  color: #333;
+  margin-bottom: 20px;
+}
