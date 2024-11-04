@@ -1,0 +1,59 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: health_check
+          uri: no://op
+          predicates:
+            - Path=/health
+        - id: pass_user_service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/oauth/google/**
+          filters:
+            - StripPrefix=1
+        - id: user_service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/user/**
+          filters:
+            - StripPrefix=1
+            - name: AuthorizationFilter
+              args:
+                allowedRoles:
+                  - USER
+                  - ADMIN
+        - id: notification_service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/notify/**
+          filters:
+            - StripPrefix=1
+            - name: AuthorizationFilter
+              args:
+                allowedRoles:
+                  - USER
+                  - ADMIN
+        - id: pass_email_service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/email_auth/**
+          filters:
+            - StripPrefix=1
+        - id: restaurant_service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/restaurant/**
+          filters:
+            - StripPrefix=1
+        - id: reservation_service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/reserve/**
+          filters:
+            - StripPrefix=1
+            - name: AuthorizationFilter
+              args:
+                allowedRoles:
+                  - USER
+                  - ADMIN
