@@ -36,10 +36,6 @@ public class User {
     @Column(name = "user_name", nullable = false, length = 100)
     private String username;
 
-    @Comment("회원 전화번호")
-    @Column(name = "phone_number", nullable = false, length = 20)
-    private String phoneNumber;
-
     @Comment("회원 가입일")
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)

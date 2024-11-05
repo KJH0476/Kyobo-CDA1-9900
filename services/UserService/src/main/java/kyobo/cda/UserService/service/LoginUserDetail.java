@@ -23,9 +23,7 @@ public class LoginUserDetail extends org.springframework.security.core.userdetai
         this.userDto = UserDto.builder()
                 .id(user.getId())
                 .email(user.getEmail())
-                .email(user.getEmail())
                 .username(user.getUsername())
-                .phoneNumber(user.getPhoneNumber())
                 .build();
     }
 }

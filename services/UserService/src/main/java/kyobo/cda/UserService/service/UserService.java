@@ -53,7 +53,6 @@ public class UserService {
                 .username(userSignUpRequestDto.getUsername())
                 .email(userSignUpRequestDto.getEmail())
                 .passwordHash(passwordEncoder.encode(userSignUpRequestDto.getPassword()))
-                .phoneNumber(userSignUpRequestDto.getPhoneNumber())
                 .build());
 
         return UserDto.builder()
@@ -61,7 +60,6 @@ public class UserService {
                 .email(createdUser.getEmail())
                 .username(createdUser.getUsername())
                 .email(createdUser.getEmail())
-                .phoneNumber(createdUser.getPhoneNumber())
                 .build();
     }
 
@@ -96,9 +94,6 @@ public class UserService {
         if (request.getUsername() != null) {
             user.setUsername(request.getUsername());
         }
-        if (request.getEmail() != null) {
-            user.setPhoneNumber(request.getEmail());
-        }
 
         userRepository.save(user);
 
@@ -108,7 +103,6 @@ public class UserService {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .phoneNumber(user.getPhoneNumber())
                 .build();
     }
 
@@ -121,7 +115,6 @@ public class UserService {
                 .email(user.getEmail())
                 .username(user.getUsername())
                 .email(user.getEmail())
-                .phoneNumber(user.getPhoneNumber())
                 .build();
     }
 

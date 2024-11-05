@@ -17,6 +17,4 @@ public class UserDto {
     private UUID id;
     private String email;
     private String username;
-    private String phoneNumber;
-    private LocalDateTime createdAt;
 }
