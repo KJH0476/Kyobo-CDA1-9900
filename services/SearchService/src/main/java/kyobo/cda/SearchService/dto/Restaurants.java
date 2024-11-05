@@ -18,6 +18,7 @@ public class Restaurants {
     private UUID restaurantId;
     private String restaurantName;
     private String address;
+    private List<Menu> menus;
     private List<String> category;
     private String phoneNumber;
     private String description;
