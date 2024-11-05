@@ -18,9 +18,9 @@ public class NotificationController {
 
     private final NotificationService notificationService;
 
-    @PostMapping("/reservation/confirm")
+    @PostMapping("/notification/confirm")
     public ResponseEntity<ReservationResponseDto> confirmReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
-        log.info("{} 예약 확정 메일 전송", reservationRequestDto.getEmail());
+        log.info("{} 예약 확정 메일 전송", reservationRequestDto.getUserEmail());
         notificationService.sendReservationConfirmEmail(reservationRequestDto);
 
         return ResponseEntity.ok(ReservationResponseDto.builder()
@@ -30,7 +30,7 @@ public class NotificationController {
                 .build());
     }
 
-    @PostMapping("/reservation/cancel")
+    @PostMapping("/notification/cancel")
     public ResponseEntity<ReservationResponseDto> cancelReservation(@RequestBody ReservationRequestDto reservationRequestDto) {
         log.info("예약 취소");
         notificationService.sendReservationCancelEmail(reservationRequestDto);

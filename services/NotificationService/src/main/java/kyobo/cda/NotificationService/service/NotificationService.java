@@ -43,10 +43,11 @@ public class NotificationService {
 
     private CompletableFuture<String> sendEmail(ReservationRequestDto reservationRequestDto, String subject, String templateName) {
         Context context = new Context();
-        context.setVariable("name", reservationRequestDto.getName());
+        context.setVariable("email", reservationRequestDto.getUserEmail());
         context.setVariable("restaurantName", reservationRequestDto.getRestaurantName());
         context.setVariable("reservationDateTime", reservationRequestDto.getReservationDateTime().toString());
         context.setVariable("reservationId", reservationRequestDto.getReservationId().toString());
+        context.setVariable("numberOfGuests", reservationRequestDto.getNumberOfGuests());
 
         String emailContent = springTemplateEngine.process(templateName, context);
 
@@ -54,7 +55,7 @@ public class NotificationService {
         try {
             SendEmailRequest emailRequest = SendEmailRequest.builder()
                     .source(sender)
-                    .destination(Destination.builder().toAddresses(reservationRequestDto.getEmail()).build())
+                    .destination(Destination.builder().toAddresses(reservationRequestDto.getUserEmail()).build())
                     .message(Message.builder()
                             .subject(Content.builder()
                                     .data(subject)
@@ -69,7 +70,7 @@ public class NotificationService {
                             .build())
                     .build();
             sesClient.sendEmail(emailRequest);
-            log.info("이메일 전송 완료: [발신자] {} -> [수신자] {}", sender, reservationRequestDto.getEmail());
+            log.info("이메일 전송 완료: [발신자] {} -> [수신자] {}", sender, reservationRequestDto.getUserEmail());
         } catch (SesException e) {
             log.error("이메일 전송 실패: {}", e.awsErrorDetails().errorMessage());
             throw e;

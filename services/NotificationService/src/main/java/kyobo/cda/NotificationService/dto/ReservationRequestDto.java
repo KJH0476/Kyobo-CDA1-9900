@@ -13,8 +13,8 @@ import java.util.UUID;
 public class ReservationRequestDto {
 
     private UUID reservationId;
-    private String email;
-    private String name;
     private String restaurantName;
+    private String userEmail;
     private LocalDateTime reservationDateTime;
+    private int numberOfGuests;
 }
