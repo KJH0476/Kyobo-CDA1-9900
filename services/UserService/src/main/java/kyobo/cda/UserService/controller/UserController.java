@@ -4,7 +4,6 @@ import kyobo.cda.UserService.dto.UserDto;
 import kyobo.cda.UserService.dto.UserSignUpRequestDto;
 import kyobo.cda.UserService.dto.UserSignUpResponseDto;
 import kyobo.cda.UserService.dto.UserUpdateRequestDto;
-import kyobo.cda.UserService.entity.User;
 import kyobo.cda.UserService.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -35,24 +34,6 @@ public class UserController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // 회원가입 이메일 인증 여부 검사
-        String token = bearer.substring(7);
-        if(!userSignUpRequestDto.getEmailVerified()) {
-            // 이메일 인증이 완료되지 않은 경우 401 (Unauthorized) 응답 반환
-            return new ResponseEntity<>(UserSignUpResponseDto.builder()
-                    .statusCode(HttpStatus.UNAUTHORIZED.value())
-                    .message("email not verified").build(),
-                    HttpStatus.UNAUTHORIZED);
-        }
-        // 회원가입 토큰 검증
-        if (!userService.validateSignUpToken(token)) {
-            // 토큰이 유효하지 않은 경우 401 (Unauthorized) 응답 반환
-            return new ResponseEntity<>(UserSignUpResponseDto.builder()
-                    .statusCode(HttpStatus.UNAUTHORIZED.value())
-                    .message("invalid token").build(),
-                    HttpStatus.UNAUTHORIZED);
-        }
-
         // 회원가입
         UserDto signupUser = userService.signupUser(userSignUpRequestDto);
 
@@ -73,9 +54,16 @@ public class UserController {
 
     // 사용자 정보 업데이트
     @PutMapping("/{userId}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable UUID id, @Validated @RequestBody UserUpdateRequestDto request, BindingResult bindingResult) {
+    public ResponseEntity<UserDto> updateUser(@PathVariable UUID id, @RequestBody UserUpdateRequestDto request) {
         UserDto userDto = userService.updateUser(id, request);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ResponseEntity<UserSignUpResponseDto> handleIllegalArgumentException(IllegalArgumentException e) {
+        return new ResponseEntity<>(UserSignUpResponseDto.builder()
+                .statusCode(HttpStatus.BAD_REQUEST.value())
+                .message(e.getMessage())
+                .build(), HttpStatus.BAD_REQUEST);
+    }
 }

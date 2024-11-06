@@ -51,7 +51,6 @@ public class UserService {
         User createdUser = userRepository.save(User.builder()
                 .email(userSignUpRequestDto.getEmail())
                 .username(userSignUpRequestDto.getUsername())
-                .email(userSignUpRequestDto.getEmail())
                 .passwordHash(passwordEncoder.encode(userSignUpRequestDto.getPassword()))
                 .build());
 
@@ -59,7 +58,6 @@ public class UserService {
                 .id(createdUser.getId())
                 .email(createdUser.getEmail())
                 .username(createdUser.getUsername())
-                .email(createdUser.getEmail())
                 .build();
     }
 
@@ -102,7 +100,6 @@ public class UserService {
                 .id(user.getId())
                 .email(user.getEmail())
                 .username(user.getUsername())
-                .email(user.getEmail())
                 .build();
     }
 
@@ -114,7 +111,6 @@ public class UserService {
                 .id(user.getId())
                 .email(user.getEmail())
                 .username(user.getUsername())
-                .email(user.getEmail())
                 .build();
     }
 
