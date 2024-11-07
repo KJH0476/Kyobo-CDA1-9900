@@ -36,6 +36,17 @@ public class ReservationController {
         return new ResponseEntity<>(reservationsByEmail, HttpStatus.OK);
     }
 
+    // 식당 별 예약 가능 시간대 조회
+    @GetMapping("/{restaurantId}")
+    public ResponseEntity<AvailabilityTimeResponseDto> getAvailableTime(@PathVariable UUID restaurantId) {
+        List<AvailabilityTimeDto> availabilityTimeList = reservationService.getAvailableTime(restaurantId);
+        return new ResponseEntity<>(AvailabilityTimeResponseDto.builder()
+                .statusCode(HttpStatus.OK.value())
+                .message("예약 가능 시간대 조회 성공")
+                .availabilityTimeList(availabilityTimeList)
+                .build(), HttpStatus.OK);
+    }
+
     // 예약 취소
     @DeleteMapping("/{reservationId}/cancel")
     public ResponseEntity<ReservationResponseDto> cancelReservation(@RequestBody ReservationRequestDto request, UUID reservationId) {

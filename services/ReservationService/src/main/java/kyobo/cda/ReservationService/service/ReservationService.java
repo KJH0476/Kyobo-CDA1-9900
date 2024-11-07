@@ -1,9 +1,6 @@
 package kyobo.cda.ReservationService.service;
 
-import kyobo.cda.ReservationService.dto.ReservationDto;
-import kyobo.cda.ReservationService.dto.ReservationNotiDto;
-import kyobo.cda.ReservationService.dto.ReservationRequestDto;
-import kyobo.cda.ReservationService.dto.WaitListDto;
+import kyobo.cda.ReservationService.dto.*;
 import kyobo.cda.ReservationService.entity.Reservation;
 import kyobo.cda.ReservationService.entity.RestaurantAvailability;
 import kyobo.cda.ReservationService.entity.WaitList;
@@ -137,6 +134,27 @@ public class ReservationService {
                             .userEmail(reservation.getUserEmail())
                             .reservationDateTime(reservation.getReservationDateTime())
                             .numberOfGuests(reservation.getNumberOfGuests())
+                            .build();
+                }).toList();
+    }
+
+    // 예약 가능 시간대 조회
+    @Transactional
+    public List<AvailabilityTimeDto> getAvailableTime(UUID restaurantId) {
+        List<RestaurantAvailability> availabilities = restaurantAvailabilityRepository.findByRestaurantId(restaurantId);
+
+        if(availabilities.isEmpty()) {
+            throw new IllegalArgumentException("해당 식당의 예약 가능 시간대가 존재하지 않습니다.");
+        }
+
+        return availabilities.stream()
+                .map(availability -> {
+                    log.info("예약 가능 시간대 조회: {}", availability);
+                    return AvailabilityTimeDto.builder()
+                            .restaurantId(availability.getRestaurantId())
+                            .reservationDate(availability.getReservationDate())
+                            .reservationTime(availability.getReservationTime())
+                            .availableTables(availability.getAvailableTables())
                             .build();
                 }).toList();
     }
