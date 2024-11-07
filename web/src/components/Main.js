@@ -118,7 +118,7 @@ const Main = () => {
       {/* Google Maps */}
       <div className="map-container">
         <LoadScript
-          googleMapsApiKey="AIzaSyAkPpqicbdu9yeB43AmjEuvaUjvLC2xKsM"
+          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_KEY}
           libraries={["places"]}
         >
           <GoogleMap
