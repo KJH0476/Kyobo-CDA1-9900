@@ -16,7 +16,7 @@ public class WaitListDto {
 
     private UUID waitListId;
     private UUID restaurantId;
-    private String restaurantName;
     private String userEmail;
     private LocalDateTime reservationDateTime;
+    private int numberOfGuests;
 }

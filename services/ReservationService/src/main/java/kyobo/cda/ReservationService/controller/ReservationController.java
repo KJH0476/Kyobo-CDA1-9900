@@ -1,6 +1,8 @@
 package kyobo.cda.ReservationService.controller;
 
-import kyobo.cda.ReservationService.dto.*;
+import kyobo.cda.ReservationService.dto.ReservationDto;
+import kyobo.cda.ReservationService.dto.ReservationRequestDto;
+import kyobo.cda.ReservationService.dto.WaitListDto;
 import kyobo.cda.ReservationService.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,13 +22,9 @@ public class ReservationController {
 
     // 예약 생성
     @PostMapping("/create")
-    public ResponseEntity<ReservationResponseDto> createReservation(@RequestBody ReservationRequestDto request) {
+    public ResponseEntity<ReservationDto> createReservation(@RequestBody ReservationRequestDto request) {
         ReservationDto reservationDto = reservationService.createReservation(request);
-        return new ResponseEntity<>(ReservationResponseDto.builder()
-                .statusCode(HttpStatus.CREATED.value())
-                .message("예약이 생성되었습니다.")
-                .reservationDto(reservationDto)
-                .build(), HttpStatus.CREATED);
+        return new ResponseEntity<>(reservationDto, HttpStatus.CREATED);
     }
 
     // 사용자 별 예약 조회
@@ -38,30 +36,15 @@ public class ReservationController {
 
     // 예약 취소
     @DeleteMapping("/{reservationId}/cancel")
-    public ResponseEntity<ReservationResponseDto> cancelReservation(@RequestBody ReservationRequestDto request, UUID reservationId) {
-        reservationService.cancelReservation(request, reservationId);
-        return new ResponseEntity<>(ReservationResponseDto.builder()
-                .statusCode(HttpStatus.OK.value())
-                .message("예약이 취소되었습니다.")
-                .build(), HttpStatus.OK);
+    public ResponseEntity<Void> cancelReservation(@PathVariable UUID reservationId) {
+        reservationService.cancelReservation(reservationId);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     // 예약 대기 리스트 등록
     @PostMapping("/waiting")
-    public ResponseEntity<WaitListResponseDto> registerWaitList(@RequestBody ReservationRequestDto request) {
+    public ResponseEntity<WaitListDto> registerWaitList(@RequestBody ReservationRequestDto request) {
         WaitListDto waitListDto = reservationService.registerWaitList(request);
-        return new ResponseEntity<>(WaitListResponseDto.builder()
-                .statusCode(HttpStatus.CREATED.value())
-                .message("예약 대기를 등록하였습니다.")
-                .waitListDto(waitListDto)
-                .build(), HttpStatus.CREATED);
-    }
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    public ResponseEntity<ReservationResponseDto> handleIllegalArgumentException(IllegalArgumentException e) {
-        return new ResponseEntity<>(ReservationResponseDto.builder()
-                .statusCode(HttpStatus.BAD_REQUEST.value())
-                .message(e.getMessage())
-                .build(), HttpStatus.BAD_REQUEST);
+        return new ResponseEntity<>(waitListDto, HttpStatus.CREATED);
     }
 }

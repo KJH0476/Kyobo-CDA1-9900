@@ -110,7 +110,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
                         .build();
 
                 // MDC에 로그 정보 저장
-                MDC.put("email", requestEmail);
+                MDC.put("userEmail", requestEmail);
                 MDC.put("requestId", requestId);
 
                 exchange = exchange.mutate().request(mutatedRequest).build();

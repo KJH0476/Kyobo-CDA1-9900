@@ -31,6 +31,7 @@
                     <keyFieldNameMap>
                         <entry key="requestId" value="requestId"/>
                         <entry key="email" value="email"/>
+                        <entry key="username" value="username"/>
                         <entry key="requestUri" value="requestUri"/>
                     </keyFieldNameMap>
                 </mdc>

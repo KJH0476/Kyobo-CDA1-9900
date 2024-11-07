@@ -12,12 +12,14 @@ import java.util.UUID;
 
 @Component
 public class LogInterceptor implements HandlerInterceptor {
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         String email = request.getHeader("X-User-Email");
         MDC.put("email", Objects.requireNonNullElse(email, "unauthorized(anonymous) user"));
+
+        String username = request.getHeader("X-User-Name");
+        MDC.put("username", Objects.requireNonNullElse(username, "unauthorized(anonymous) user"));
 
         String requestUri = request.getRequestURI();
         MDC.put("requestUri", requestUri);

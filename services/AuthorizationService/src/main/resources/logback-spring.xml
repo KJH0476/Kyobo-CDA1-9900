@@ -30,7 +30,7 @@
                 <mdc>
                     <keyFieldNameMap>
                         <entry key="requestId" value="requestId"/>
-                        <entry key="email" value="email"/>
+                        <entry key="userEmail" value="userEmail"/>
                         <entry key="requestUri" value="requestUri"/>
                     </keyFieldNameMap>
                 </mdc>
