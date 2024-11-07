@@ -16,7 +16,7 @@ public class LogInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         String email = request.getHeader("X-User-Email");
-        MDC.put("userEmail", Objects.requireNonNullElse(email, "unauthorized(anonymous) user"));
+        MDC.put("email", Objects.requireNonNullElse(email, "unauthorized(anonymous) user"));
 
         String requestUri = request.getRequestURI();
         MDC.put("requestUri", requestUri);
@@ -33,7 +33,7 @@ public class LogInterceptor implements HandlerInterceptor {
     }
 
     private String generateRequestId(HttpServletRequest request) {
-        String requestId = request.getHeader("X-Request-Id");
+        String requestId = request.getHeader("X-Request-Email");
         if (requestId == null) {
             requestId = UUID.randomUUID().toString().substring(0, 8);
         }
