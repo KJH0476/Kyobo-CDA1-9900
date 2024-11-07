@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./SimpleLogin.css";
+//import { login } from '../api/auth';
 
 const SimpleLogin = () => {
   const navigate = useNavigate();
@@ -13,6 +14,30 @@ const SimpleLogin = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    //{로그인 api 호출 시작부분}
+    /*
+    try {
+      // API 호출 시도
+      const response = await login(formData.email, formData.password);
+      console.log('API 응답:', response);
+
+      if (response.success) {
+        // API 로그인 성공
+        localStorage.setItem("currentUser", JSON.stringify(response.data));
+        alert("로그인 성공!");
+        navigate("/");
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
+      } else {
+        // API 로그인 실패
+        setError(response.message);
+      }
+    } catch (error) {
+      console.error('로그인 에러:', error);
+      // API 오류 발생
+*/
 
     const users = JSON.parse(localStorage.getItem("users") || "[]");
     const user = users.find(
@@ -59,6 +84,10 @@ const SimpleLogin = () => {
               onChange={handleChange}
               className="form-input"
               required
+              autoComplete="new-password"
+              aria-autocomplete="none"
+              readOnly
+              onFocus={(e) => e.target.removeAttribute('readonly')}
             />
           </div>
 
@@ -72,6 +101,10 @@ const SimpleLogin = () => {
               onChange={handleChange}
               className="form-input"
               required
+              autoComplete="new-password"
+              aria-autocomplete="none"
+              readOnly
+              onFocus={(e) => e.target.removeAttribute('readonly')}
             />
           </div>
 

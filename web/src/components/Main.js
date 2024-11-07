@@ -19,34 +19,11 @@ const Main = () => {
   const navigate = useNavigate();
   // 지도 설정
   // 로그인 상태 확인
-  const isLoggedIn = localStorage.getItem("accessToken");
-
-  const redirectToCognito = () => {
-    const domain = process.env.REACT_APP_COGNITO_DOMAIN;
-    const clientId = process.env.REACT_APP_COGNITO_CLIENT_ID;
-    const redirectUri = process.env.REACT_APP_COGNITO_REDIRECT_URI;
-    const responseType = 'code'; // Authorization code grant
-    const scopes = ['openid', 'email', 'phone'];
-
-    const url = `${domain}/login?client_id=${clientId}&response_type=${responseType}&scope=${scopes.join(
-        '+'
-    )}&redirect_uri=${encodeURIComponent(redirectUri)}`;
-
-    window.location.href = url;
-  };
-
-  // 로그아웃 처리
+  const isLoggedIn = localStorage.getItem("currentUser");
+// 로그아웃 처리
   const handleLogout = () => {
-    const domain = process.env.REACT_APP_COGNITO_DOMAIN;
-    const clientId = process.env.REACT_APP_COGNITO_CLIENT_ID;
-    const logoutUri = `${domain}/logout?client_id=${clientId}&logout_uri=${encodeURIComponent(
-        process.env.REACT_APP_COGNITO_LOGOUT_REDIRECT_URI
-    )}`;
-
     localStorage.removeItem("currentUser"); // 로그인 정보 삭제
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('idToken');
-    localStorage.removeItem('refreshToken');
+    localStorage.removeItem("accessToken");
     setSelectedRestaurantDetail(null); // 열려있는 상세 정보/예약 패널 닫기
     setIsSearchModalOpen(true); // 검색 모달 다시 열기
     navigate("/"); // 메인 페이지로 이동 (새로고침 효과)
@@ -96,12 +73,15 @@ const Main = () => {
           </Link>
         </div>
         <div className="nav-right">
-          {!localStorage.getItem("accessToken") ? (
+          {!localStorage.getItem("currentUser") ? (
             // 비로그인 상태: 로그인, 회원가입 버튼 표시
             <>
-              <button onClick={redirectToCognito} className="nav-button">
+              <Link to="/login" className="nav-button">
                 로그인
-              </button>
+              </Link>
+              <Link to="/signup" className="nav-button">
+                회원가입
+              </Link>
             </>
           ) : (
             // 로그인 상태: 마이페이지, 로그아웃 버튼 표시
@@ -138,7 +118,7 @@ const Main = () => {
       {/* Google Maps */}
       <div className="map-container">
         <LoadScript
-          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_KEY}
+          googleMapsApiKey="AIzaSyAkPpqicbdu9yeB43AmjEuvaUjvLC2xKsM"
           libraries={["places"]}
         >
           <GoogleMap

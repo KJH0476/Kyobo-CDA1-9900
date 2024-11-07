@@ -1,120 +1,92 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./SignUp.css";
 import { useNavigate, Link } from "react-router-dom";
+// import { signup } from "../api/auth"; // API 함수 주석 처리
 
 const SignUp = () => {
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
+    username: "",
     password: "",
     passwordConfirm: "",
-    verificationCode: "",
   });
 
   const [errors, setErrors] = useState({});
-  const [verificationStatus, setVerificationStatus] = useState({
-    sent: false,
-    verified: false,
-    timer: 180, // 3분
-  });
-  const [isTimerRunning, setIsTimerRunning] = useState(false);
-
-  useEffect(() => {
-    let interval;
-    if (isTimerRunning && verificationStatus.timer > 0) {
-      interval = setInterval(() => {
-        setVerificationStatus((prev) => ({
-          ...prev,
-          timer: prev.timer - 1,
-        }));
-      }, 1000);
-    } else if (verificationStatus.timer === 0) {
-      setIsTimerRunning(false);
-    }
-    return () => clearInterval(interval);
-  }, [isTimerRunning, verificationStatus.timer]);
-
-  const formatTime = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${mins}:${secs.toString().padStart(2, "0")}`;
-  };
-
-  const handleSendVerification = () => {
-    if (!formData.email) {
-      setErrors({ email: "이메일을 입력해주세요" });
-      return;
-    }
-    // 실제 구현시에는 여기서 서버로 인증 코드 발송 요청
-    const mockVerificationCode = "123456"; // 실제로는 서버에서 생성
-    console.log("인증코드:", mockVerificationCode);
-
-    setVerificationStatus((prev) => ({
-      ...prev,
-      sent: true,
-      timer: 180,
-    }));
-    setIsTimerRunning(true);
-    setErrors({});
-  };
-
-  const handleVerifyCode = () => {
-    // 실제 구현시에는 서버로 인증 코드 확인 요청
-    if (formData.verificationCode === "123456") {
-      setVerificationStatus((prev) => ({
-        ...prev,
-        verified: true,
-        sent: false,
-      }));
-      setIsTimerRunning(false);
-      setErrors({});
-    } else {
-      setErrors((prev) => ({
-        ...prev,
-        verificationCode: "인증번호가 일치하지 않습니다",
-      }));
-    }
-  };
+  const [successMessage, setSuccessMessage] = useState(""); // 성공 메시지
+  const [errorMessage, setErrorMessage] = useState(""); // 실패 메시지
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const newErrors = {};
+    setErrors({});
+    setSuccessMessage("");
+    setErrorMessage("");
 
+    // 유효성 검사
+    const newErrors = {};
     if (!formData.email) {
       newErrors.email = "이메일을 입력해주세요";
     }
+    if (!formData.username) {
+      newErrors.username = "사용자명을 입력해주세요";
+    }
     if (!formData.password) {
       newErrors.password = "비밀번호를 입력해주세요";
-    }
-    if (formData.password !== formData.passwordConfirm) {
+    } else if (formData.password !== formData.passwordConfirm) {
       newErrors.passwordConfirm = "비밀번호가 일치하지 않습니다";
     }
-    if (!verificationStatus.verified) {
-      newErrors.verification = "이메일 인증이 필요합니다";
+
+    if (Object.keys(newErrors).length > 0) {
+      setErrors(newErrors);
+      return;
     }
 
-    if (Object.keys(newErrors).length === 0) {
+    // API 호출 대신 localStorage에 저장
+    try {
+      // 기존 사용자 목록을 가져옴
       const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
 
+      // 중복 이메일 확인
       if (existingUsers.some((user) => user.email === formData.email)) {
         setErrors({ email: "이미 존재하는 이메일입니다" });
         return;
       }
 
+    /* // API 호출     API호출 시 위에 있는 localStorage(임시로 사용함) 내용 삭제
+    try {
+      const response = await signup(
+        formData.email,
+        formData.username,
+        formData.password
+      );
+      setSuccessMessage(response.message || "회원가입이 완료되었습니다!");
+      setTimeout(() => {
+        navigate("/login"); // 회원가입 성공 시 로그인 페이지로 이동
+      }, 2000);
+    } catch (error) {
+      setErrorMessage(error.message || "회원가입 중 오류가 발생했습니다.");
+    }
+    */
+      
+      // 새로운 사용자 추가
       const newUser = {
         email: formData.email,
+        username: formData.username,
         password: formData.password,
       };
 
+      // localStorage에 사용자 목록 업데이트
       localStorage.setItem(
         "users",
         JSON.stringify([...existingUsers, newUser])
       );
 
-      alert("회원가입이 완료되었습니다!");
-      navigate("/login");
-    } else {
-      setErrors(newErrors);
+      setSuccessMessage("회원가입이 완료되었습니다!");
+      setTimeout(() => {
+        navigate("/login"); // 회원가입 성공 시 로그인 페이지로 이동
+      }, 2000);
+    } catch (error) {
+      setErrorMessage("회원가입 중 오류가 발생했습니다.");
     }
   };
 
@@ -136,66 +108,44 @@ const SignUp = () => {
     <div className="signup-container">
       <div className="signup-card">
         <h2 className="signup-title">회원가입</h2>
-        <form onSubmit={handleSubmit} className="signup-form">
+        <form onSubmit={handleSubmit} className="signup-form" autoComplete="off">
+          {/* 성공 및 오류 메시지 */}
+          {successMessage && <div className="success-message">{successMessage}</div>}
+          {errorMessage && <div className="error-message">{errorMessage}</div>}
+
           {/* 이메일 입력 */}
           <div className="form-group">
-            <div className="email-group">
-              <input
-                type="email"
-                name="email"
-                placeholder="이메일"
-                value={formData.email}
-                onChange={handleChange}
-                className={`form-input ${errors.email ? "error" : ""}`}
-                disabled={verificationStatus.verified}
-              />
-              <button
-                type="button"
-                onClick={handleSendVerification}
-                className="verification-button"
-                disabled={verificationStatus.verified}
-              >
-                {verificationStatus.sent ? "재전송" : "인증"}
-              </button>
-            </div>
-            {errors.email && (
-              <span className="error-message">{errors.email}</span>
-            )}
+            <input
+              type="email" 
+              name="email"
+              placeholder="이메일"
+              value={formData.email}
+              onChange={handleChange}
+              className={`form-input ${errors.email ? "error" : ""}`}
+              autoComplete="new-email"
+              aria-autocomplete="none"
+              readOnly
+              onFocus={(e) => e.target.removeAttribute('readonly')}
+            />
+            {errors.email && <span className="error-message">{errors.email}</span>}
           </div>
 
-          {/* 인증번호 입력 */}
-          {verificationStatus.sent && !verificationStatus.verified && (
-            <div className="form-group">
-              <div className="email-group">
-                <input
-                  type="text"
-                  name="verificationCode"
-                  placeholder="인증번호 6자리"
-                  value={formData.verificationCode}
-                  onChange={handleChange}
-                  className={`form-input ${
-                    errors.verificationCode ? "error" : ""
-                  }`}
-                  maxLength={6}
-                />
-                <button
-                  type="button"
-                  onClick={handleVerifyCode}
-                  className="verification-button"
-                >
-                  확인
-                </button>
-              </div>
-              {verificationStatus.timer > 0 && (
-                <span className="timer">
-                  {formatTime(verificationStatus.timer)}
-                </span>
-              )}
-              {errors.verificationCode && (
-                <span className="error-message">{errors.verificationCode}</span>
-              )}
-            </div>
-          )}
+          {/* 사용자명 입력 */}
+          <div className="form-group">
+            <input
+              type="text"
+              name="username"
+              placeholder="사용자명"
+              value={formData.username}
+              onChange={handleChange}
+              className={`form-input ${errors.username ? "error" : ""}`}
+              autoComplete="new-username"
+              aria-autocomplete="none"
+              readOnly
+              onFocus={(e) => e.target.removeAttribute('readonly')}
+            />
+            {errors.username && <span className="error-message">{errors.username}</span>}
+          </div>
 
           {/* 비밀번호 입력 */}
           <div className="form-group">
@@ -206,10 +156,12 @@ const SignUp = () => {
               value={formData.password}
               onChange={handleChange}
               className={`form-input ${errors.password ? "error" : ""}`}
+              autoComplete="new-password"
+              aria-autocomplete="none"
+              readOnly
+              onFocus={(e) => e.target.removeAttribute('readonly')}
             />
-            {errors.password && (
-              <span className="error-message">{errors.password}</span>
-            )}
+            {errors.password && <span className="error-message">{errors.password}</span>}
           </div>
 
           {/* 비밀번호 확인 */}
@@ -221,6 +173,11 @@ const SignUp = () => {
               value={formData.passwordConfirm}
               onChange={handleChange}
               className={`form-input ${errors.passwordConfirm ? "error" : ""}`}
+              autoComplete="new-password"
+              aria-autocomplete="none"
+              readOnly
+              onFocus={(e) => e.target.removeAttribute('readonly')}
+              
             />
             {errors.passwordConfirm && (
               <span className="error-message">{errors.passwordConfirm}</span>
