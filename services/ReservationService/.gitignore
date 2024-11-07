@@ -37,4 +37,4 @@ out/
 .vscode/
 
 .DS_Store
-.application-SECRET.properties
+application-SECRET.properties
