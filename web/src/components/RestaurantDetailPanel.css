@@ -121,22 +121,32 @@ label {
 }
 
 .time-slot {
-  padding: 10px;
-  border: 1px solid #ddd;
+  padding: 12px;
+  border: 1px solid #dee2e6;
   border-radius: 4px;
-  background: white;
+  background-color: white;
+  width: 100%;
   cursor: pointer;
-  transition: all 0.2s;
+  font-size: 14px;
 }
 
 .time-slot:hover {
   background-color: #f5f5f5;
 }
 
+/* 예약된 시간 버튼 스타일 */
+.time-slot.reservation-disabled {
+  background-color: #e9ecef;  /* 회색 배경 */
+  color: #868e96;  /* 회색 텍스트 */
+  border: 1px solid #dee2e6;
+  cursor: not-allowed;
+  pointer-events: none;  /* 클릭 불가능 */
+}
+
 .time-slot.selected {
-  background-color: #03c75a;
+  background-color: #00C471;  /* 네이버 예약 스타일의 초록색 */
   color: white;
-  border-color: #03c75a;
+  border-color: #00C471;
 }
 
 .people-counter {
@@ -189,5 +199,33 @@ label {
   border: none;
   font-size: 24px;
   cursor: pointer;
+  color: #666;
+}
+.submit-reservation.waitlist-button {
+  background-color: #ffc107;  /* 노란색 */
+  color: #000;
+}
+
+.submit-reservation.waitlist-button:hover {
+  background-color: #ffca2c;
+}
+
+.waitlist-button {
+  background-color: #ff9800;
+}
+
+.waitlist-notice {
+  color: #ff9800;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.booked {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.booked-label {
+  font-size: 0.8em;
   color: #666;
 }
