@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>대기 예약 자리 발생 안내</title>
+    <meta charset="UTF-8">
+</head>
+<body>
+    <p>안녕하세요, <span th:text="${email}">고객님</span>님!</p>
+    <p><span th:text="${restaurantName}">레스토랑 이름</span>에서 자리가 발생하여 안내드립니다.</p>
+    <p>예약 가능 일자: <span th:text="${reservationDateTime}">2024-01-01 12:00</span></p>
+    <p>현재 자리가 발생했으니 예약을 원하시면 빠르게 확인해주시기 바랍니다.</p>
+    <p>감사합니다!</p>
+</body>
+</html>
