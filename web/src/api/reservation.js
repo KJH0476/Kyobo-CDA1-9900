@@ -2,47 +2,38 @@
 
 
 // 예약 정보 확인 API 호출 함수
-const BASE_URL = process.env.REACT_APP_BASE_URL || 'http://localhost:8000';
+const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-/**
- * 예약 정보 조회
- * @param {string} email - 예약 정보를 조회할 사용자의 이메일
- * @param {string} jwtToken - 사용자의 JWT 액세스 토큰
- * @returns {Promise<Object[]>} - 예약 정보 배열
- */
 export const fetchReservations = async (email, jwtToken) => {
   try {
     const response = await fetch(`${BASE_URL}/reservation/reservations/${email}`, {
       method: "GET",
       headers: {
-        Authorization: `Bearer ${jwtToken}`,
+        "Authorization": `Bearer ${jwtToken}`,
         "X-User-Email": email,
-      },
+        "Content-Type": "application/json"
+      }
     });
 
     if (!response.ok) {
-      const error = await response.json();
-      throw new Error(error.message || "예약 정보를 불러오는 데 실패했습니다.");
+      const errorData = await response.json();
+      throw new Error(errorData.message || "예약 정보를 불러오는 데 실패했습니다.");
     }
 
-    return await response.json(); // 예약 정보 반환
+    const data = await response.json();
+    return data; // 성공 시 예약 데이터 배열 반환
   } catch (error) {
-    throw error; // 호출한 쪽에서 에러 처리
+    console.error("예약 조회 API 에러:", error);
+    throw error;
   }
 };
 
 
 
 
+
 // 예약 취소 API 호출 함수
 
-/**
- * 예약 취소
- * @param {string} reservationId - 취소할 예약 ID
- * @param {string} jwtToken - 사용자의 JWT 액세스 토큰
- * @param {Object} cancellationData - 취소 요청에 필요한 데이터
- * @returns {Promise<Object>} - API 응답 객체
- */
 export const cancelReservation = async (reservationId, jwtToken, cancellationData) => {
   try {
     const response = await fetch(`${BASE_URL}/reservation/${reservationId}/cancel`, {
@@ -68,13 +59,7 @@ export const cancelReservation = async (reservationId, jwtToken, cancellationDat
 
 
 
-// 예약 생성 A
-/**
- * 예약 생성
- * @param {Object} reservationData - 예약 생성에 필요한 데이터
- * @param {string} jwtToken - 사용자의 JWT 액세스 토큰
- * @returns {Promise<Object>} - API 응답 객체
- */
+// 예약 생성 API 호출 함수
 export const createReservation = async (reservationData, jwtToken) => {
     try {
       const response = await fetch(`${BASE_URL}/reservation/create`, {
