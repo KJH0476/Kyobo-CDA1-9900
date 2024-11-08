@@ -1,45 +1,34 @@
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-
--- RestaurantAvailability 테이블
 CREATE TABLE restaurant_availability (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY,
     restaurant_id UUID NOT NULL,
-    date DATE NOT NULL,
-    time_slot TIME NOT NULL,
-    total_seats INT NOT NULL,
-    available_seats INT NOT NULL CHECK (available_seats >= 0 AND available_seats <= total_seats),
-    status VARCHAR(20) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (restaurant_id, date, time_slot)
+    restaurant_name VARCHAR(100) NOT NULL,
+    reservation_date DATE NOT NULL,
+    reservation_time TIME NOT NULL,
+    total_tables INTEGER NOT NULL,
+    available_tables INTEGER NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL
 );
 
--- Reservation 테이블
 CREATE TABLE reservation (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL,
+    id UUID PRIMARY KEY,
     restaurant_id UUID NOT NULL,
-    availability_id UUID NOT NULL REFERENCES RestaurantAvailability(id),
-    reservation_time TIMESTAMP NOT NULL,
-    number_of_people INT NOT NULL,
-    status VARCHAR(20) NOT NULL CHECK (status IN ('CONFIRMED', 'CANCELLED')),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    user_email VARCHAR(100) NOT NULL,
+    availability_id UUID NOT NULL,
+    reservation_time TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    number_of_guests INTEGER NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    CONSTRAINT fk_reservation_availability FOREIGN KEY (availability_id) REFERENCES restaurant_availability(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
 
-CREATE INDEX idx_reservation_user_id ON Reservation(user_id);
-
--- Waitlist 테이블
 CREATE TABLE wait_list (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    user_id UUID NOT NULL,
+    id UUID PRIMARY KEY,
     restaurant_id UUID NOT NULL,
-    availability_id UUID NOT NULL REFERENCES RestaurantAvailability(id),
-    request_time TIMESTAMP NOT NULL,
-    number_of_people INT NOT NULL,
-    status VARCHAR(20) NOT NULL CHECK (status IN ('WAITING', 'NOTIFIED', 'CONFIRMED', 'CANCELLED')),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    user_email VARCHAR(100) NOT NULL,
+    availability_id UUID NOT NULL,
+    number_of_guests INTEGER NOT NULL,
+    created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL,
+    CONSTRAINT fk_waitlist_availability FOREIGN KEY (availability_id) REFERENCES restaurant_availability(id) ON DELETE CASCADE ON UPDATE CASCADE
 );
-
-CREATE INDEX idx_waitlist_user_id ON Waitlist(user_id);
