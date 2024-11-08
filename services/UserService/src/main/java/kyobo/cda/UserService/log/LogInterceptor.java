@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.MDC;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
-import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -34,7 +33,7 @@ public class LogInterceptor implements HandlerInterceptor {
     }
 
     private String generateRequestId(HttpServletRequest request) {
-        String requestId = request.getHeader("X-Request-Email");
+        String requestId = request.getHeader("X-Request-Id");
         if (requestId == null) {
             requestId = UUID.randomUUID().toString().substring(0, 8);
         }

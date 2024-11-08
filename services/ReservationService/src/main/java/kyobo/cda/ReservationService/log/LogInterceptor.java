@@ -33,7 +33,7 @@ public class LogInterceptor implements HandlerInterceptor {
     }
 
     private String generateRequestId(HttpServletRequest request) {
-        String requestId = request.getHeader("X-Request-Email");
+        String requestId = request.getHeader("X-Request-Id");
         if (requestId == null) {
             requestId = UUID.randomUUID().toString().substring(0, 8);
         }
