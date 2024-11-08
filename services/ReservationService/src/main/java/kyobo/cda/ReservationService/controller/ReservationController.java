@@ -30,14 +30,14 @@ public class ReservationController {
     }
 
     // 사용자 별 예약 조회
-    @GetMapping("/{email}")
+    @GetMapping("/reservations/{email}")
     public ResponseEntity<List<ReservationDto>> getReservations(@PathVariable String email) {
         List<ReservationDto> reservationsByEmail = reservationService.getReservationsByEmail(email);
         return new ResponseEntity<>(reservationsByEmail, HttpStatus.OK);
     }
 
     // 식당 별 예약 가능 시간대 조회
-    @GetMapping("/{restaurantId}")
+    @GetMapping("/availability/{restaurantId}")
     public ResponseEntity<AvailabilityTimeResponseDto> getAvailableTime(@PathVariable UUID restaurantId) {
         List<AvailabilityTimeDto> availabilityTimeList = reservationService.getAvailableTime(restaurantId);
         return new ResponseEntity<>(AvailabilityTimeResponseDto.builder()
@@ -49,7 +49,7 @@ public class ReservationController {
 
     // 예약 취소
     @DeleteMapping("/{reservationId}/cancel")
-    public ResponseEntity<ReservationResponseDto> cancelReservation(@RequestBody ReservationRequestDto request, UUID reservationId) {
+    public ResponseEntity<ReservationResponseDto> cancelReservation(@RequestBody ReservationRequestDto request, @PathVariable UUID reservationId) {
         reservationService.cancelReservation(request, reservationId);
         return new ResponseEntity<>(ReservationResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
