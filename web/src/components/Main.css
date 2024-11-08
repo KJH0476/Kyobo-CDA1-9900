@@ -64,8 +64,8 @@
   width: 100%;
   height: calc(100vh - 60px);
   position: absolute;
-  top: 60px;
-  left: 0;
+  top: 0;
+  left: 390px;
   right: 0;
   bottom: 0;
   z-index: 1;

@@ -8,7 +8,6 @@ export const login = async (email, password) => {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'X-User-Email': email,
         'Access-Control-Allow-Origin': '*'  // CORS 헤더 추가
       },
       credentials: 'include',  // 쿠키 포함
