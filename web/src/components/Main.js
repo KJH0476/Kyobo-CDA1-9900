@@ -6,8 +6,7 @@ import RestaurantDetailPanel from "./RestaurantDetailPanel";
 import "./Main.css";
 
 const Main = () => {
-  const [selectedRestaurantDetail, setSelectedRestaurantDetail] =
-    useState(null);
+  const [selectedRestaurantDetail, setSelectedRestaurantDetail] = useState(null);
   const [isSearchModalOpen, setIsSearchModalOpen] = useState(true);
   const [selectedRestaurant, setSelectedRestaurant] = useState(null);
   const [showReservationModal, setShowReservationModal] = useState(false);
@@ -17,24 +16,22 @@ const Main = () => {
     people: 1,
   });
   const navigate = useNavigate();
-  // 지도 설정
-  // 로그인 상태 확인
-  const isLoggedIn = localStorage.getItem("currentUser");
-// 로그아웃 처리
+
+  // 로그아웃 처리
   const handleLogout = () => {
-    localStorage.removeItem("currentUser"); // 로그인 정보 삭제
+    localStorage.removeItem("currentUser");
     localStorage.removeItem("accessToken");
-    setSelectedRestaurantDetail(null); // 열려있는 상세 정보/예약 패널 닫기
-    setIsSearchModalOpen(true); // 검색 모달 다시 열기
-    navigate("/"); // 메인 페이지로 이동 (새로고침 효과)
-    window.location.reload(); // 페이지 새로고침하여 상태 초기화
+    setSelectedRestaurantDetail(null);
+    setIsSearchModalOpen(true);
+    navigate("/");
+    window.location.reload();
   };
 
   const mapContainerStyle = {
     width: "100%",
-    height: "calc(100vh - 60px)", // 네비게이션 바 높이만큼 제외
+    height: "calc(100vh - 60px)",
     position: "relative",
-    marginTop: "60px", // 네비게이션 바 높이만큼 여백 추가
+    marginTop: "60px",
   };
 
   const center = {
@@ -46,13 +43,13 @@ const Main = () => {
     zoom: 15,
     disableDefaultUI: false,
     zoomControl: true,
-  }; // 식당 선택 처리 함수
-  const handleSelectRestaurant = (restaurant) => {
-    setSelectedRestaurant(restaurant);
-    setSelectedRestaurantDetail(restaurant); // 상세 정보 패널 표시
   };
 
-  // 예약 처리 함수
+  const handleSelectRestaurant = (restaurant) => {
+    setSelectedRestaurant(restaurant);
+    setSelectedRestaurantDetail(restaurant);
+  };
+
   const handleReservation = (e) => {
     e.preventDefault();
     console.log("예약 정보:", {
@@ -64,6 +61,9 @@ const Main = () => {
     setReservationData({ date: "", time: "", people: 1 });
   };
 
+  // 현재 로그인 상태 확인 (세션스토리지 사용)
+  const isLoggedIn = localStorage.getItem("currentUser") || false;
+
   return (
     <div className="main-container">
       <nav className="nav-bar">
@@ -73,8 +73,7 @@ const Main = () => {
           </Link>
         </div>
         <div className="nav-right">
-          {!localStorage.getItem("currentUser") ? (
-            // 비로그인 상태: 로그인, 회원가입 버튼 표시
+          {!isLoggedIn ? (
             <>
               <Link to="/login" className="nav-button">
                 로그인
@@ -84,15 +83,11 @@ const Main = () => {
               </Link>
             </>
           ) : (
-            // 로그인 상태: 마이페이지, 로그아웃 버튼 표시
             <>
               <Link to="/mypage" className="nav-button">
                 마이페이지
               </Link>
-              <button
-                onClick={handleLogout}
-                className="nav-button logout-button"
-              >
+              <button onClick={handleLogout} className="nav-button logout-button">
                 로그아웃
               </button>
             </>
@@ -100,14 +95,12 @@ const Main = () => {
         </div>
       </nav>
 
-      {/* 검색 모달 */}
       <SearchModal
         isOpen={isSearchModalOpen}
         onClose={() => setIsSearchModalOpen(false)}
         onSelectRestaurant={handleSelectRestaurant}
       />
 
-      {/* 식당 상세 정보 패널 */}
       {selectedRestaurantDetail && (
         <RestaurantDetailPanel
           restaurant={selectedRestaurantDetail}
@@ -115,7 +108,6 @@ const Main = () => {
         />
       )}
 
-      {/* Google Maps */}
       <div className="map-container">
         <LoadScript
           googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_KEY}
