@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-// import { fetchReservations } from "../api/reservation"; // API 준비 완료 후 활성화
+// import { fetchReservations, cancelReservation } from "../api/reservation"; // API 준비 완료 후 활성화
 import "./MyPage.css";
 
 const MyPage = () => {
@@ -17,7 +17,7 @@ const MyPage = () => {
       return;
     }
     setUserData(user);
-
+/*-------------------------------------------------------------------------*/
     // 백엔드 호출 대신 localStorage 사용 (임시 데이터)
     try {
       // const jwtToken = localStorage.getItem("jwtToken"); // API 호출 시 사용
@@ -30,6 +30,33 @@ const MyPage = () => {
       setError(err.message || "예약 정보를 불러오는 데 실패했습니다."); // 에러 처리
     }
   }, [navigate]);
+/*--------------------------------------------------------------------------*/
+// 예약 정보 조회 API 호출 시 아래 주석 부분 그대로 위에 대입 
+/* 
+    const fetchData = async () => {
+      try {
+        const jwtToken = localStorage.getItem("jwtToken");
+        const data = await fetchReservations(user.email, jwtToken);
+        setReservations(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchData();
+  }, [navigate]);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (reservations.length === 0) {
+    return <div>예약 내역이 없습니다.</div>;
+  }
+  */
+
+
+
 
 
   // 예약 삭제 함수

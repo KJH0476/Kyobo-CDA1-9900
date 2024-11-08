@@ -59,6 +59,11 @@ const SignUp = () => {
         formData.username,
         formData.password
       );
+      console.log('API 응답:', response);
+      
+      // 로그인 후 사용자 정보를 로컬 스토리지에 저장
+      localStorage.setItem("currentUser", JSON.stringify(response.data.userDto));
+      
       setSuccessMessage(response.message || "회원가입이 완료되었습니다!");
       setTimeout(() => {
         navigate("/login"); // 회원가입 성공 시 로그인 페이지로 이동
