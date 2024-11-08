@@ -18,6 +18,7 @@ import org.springframework.web.client.RestTemplate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Slf4j
@@ -34,6 +35,13 @@ public class ReservationService {
 
     @Transactional
     public ReservationDto createReservation(ReservationRequestDto request) {
+        // 중복 예약 확인
+        reservationRepository.findByUserEmailAndRestaurantIdAndReservationDateTime(
+                request.getUserEmail(),
+                request.getRestaurantId(),
+                LocalDateTime.of(request.getReservationDate(), request.getReservationTime())
+        ).ifPresent(r -> { throw new IllegalArgumentException("이미 해당 시간에 예약이 존재합니다."); });
+
         // 해당 restaurantId와 시간으로 예약 가능 여부를 확인
         RestaurantAvailability availability = restaurantAvailabilityRepository.findByRestaurantIdAndReservationDateAndReservationTime(
                         request.getRestaurantId(), request.getReservationDate(), request.getReservationTime())
@@ -41,7 +49,7 @@ public class ReservationService {
 
         // 예약 가능한 테이블이 있는지 확인
         if (availability.getAvailableTables() <= 0) {
-            throw new IllegalStateException("예약 가능한 자리가 없습니다.");
+            throw new IllegalArgumentException("예약 가능한 자리가 없습니다.");
         }
 
         // 예약 후 availableTables 감소
@@ -154,6 +162,7 @@ public class ReservationService {
                             .restaurantId(availability.getRestaurantId())
                             .reservationDate(availability.getReservationDate())
                             .reservationTime(availability.getReservationTime())
+                            .totalTables(availability.getTotalTables())
                             .availableTables(availability.getAvailableTables())
                             .build();
                 }).toList();
