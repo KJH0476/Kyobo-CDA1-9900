@@ -29,7 +29,7 @@ public class NotificationService {
     @Async
     public CompletableFuture<String> sendReservationConfirmEmail(ReservationRequestDto reservationRequestDto) {
         String subject = "예약 확정";
-        String templateName = "reservation-confirmation.html";
+        String templateName = "reservation-confirm.html";
 
         Context context = new Context();
         context.setVariable("email", reservationRequestDto.getUserEmail());
