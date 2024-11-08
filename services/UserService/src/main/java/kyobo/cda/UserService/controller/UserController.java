@@ -24,7 +24,7 @@ public class UserController {
 
     // 회원가입
     @PostMapping("/signup")
-    public ResponseEntity<UserSignUpResponseDto> registerUser(@Validated @RequestBody UserSignUpRequestDto userSignUpRequestDto, BindingResult bindingResult, @RequestHeader("Authorization") String bearer) {
+    public ResponseEntity<UserSignUpResponseDto> registerUser(@Validated @RequestBody UserSignUpRequestDto userSignUpRequestDto, BindingResult bindingResult) {
 
         if(bindingResult.hasErrors()){
             //400 에러 반환
@@ -46,16 +46,16 @@ public class UserController {
     }
 
     // 사용자 정보 조회
-    @GetMapping("/{userId}")
-    public ResponseEntity<UserDto> getUser(@PathVariable UUID id) {
-        UserDto userDto = userService.getUserById(id);
+    @GetMapping("/find/{userId}")
+    public ResponseEntity<UserDto> getUser(@PathVariable UUID userId) {
+        UserDto userDto = userService.getUserById(userId);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
     // 사용자 정보 업데이트
-    @PutMapping("/{userId}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable UUID id, @RequestBody UserUpdateRequestDto request) {
-        UserDto userDto = userService.updateUser(id, request);
+    @PutMapping("/update/{userId}")
+    public ResponseEntity<UserDto> updateUser(@PathVariable UUID userId, @RequestBody UserUpdateRequestDto request) {
+        UserDto userDto = userService.updateUser(userId, request);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 

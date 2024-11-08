@@ -6,6 +6,7 @@ import jakarta.annotation.PostConstruct;
 import kyobo.cda.UserService.dto.UserDto;
 import kyobo.cda.UserService.dto.UserSignUpRequestDto;
 import kyobo.cda.UserService.dto.UserUpdateRequestDto;
+import kyobo.cda.UserService.entity.Role;
 import kyobo.cda.UserService.entity.User;
 import kyobo.cda.UserService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -52,6 +53,7 @@ public class UserService {
                 .email(userSignUpRequestDto.getEmail())
                 .username(userSignUpRequestDto.getUsername())
                 .passwordHash(passwordEncoder.encode(userSignUpRequestDto.getPassword()))
+                .role(Role.USER)
                 .build());
 
         return UserDto.builder()

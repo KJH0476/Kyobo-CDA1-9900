@@ -55,6 +55,7 @@ public class User {
     public void prePersist() {
         id = UUID.randomUUID();
         createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
     }
 
     @PreUpdate
