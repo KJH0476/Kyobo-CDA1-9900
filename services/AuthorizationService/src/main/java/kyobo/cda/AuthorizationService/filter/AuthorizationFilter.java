@@ -17,6 +17,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
+import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
@@ -96,30 +97,38 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
                 String token = authorization.substring(7);
                 Claims claims = jwtService.getClaims(token);
 
-                // 토큰 검증 로직 추가
+                // 토큰 검증
                 if (jwtService.validateToken(token)) log.info("액세스 토큰 검증 성공");
 
-                // 이메일 정보 추출 후 다음 요청 헤더에 저장
                 String requestEmail = claims.getSubject();
-                // UUID 로 requestId 생성 및 다음 요청 헤더에 저장
                 String requestId = UUID.randomUUID().toString().substring(0, 8);
-                // 요청 헤더에 email, requestId 추가
-                ServerHttpRequest mutatedRequest = exchange.getRequest().mutate()
-                        .header("X-User-Email", requestEmail)
-                        .header("X-Request-Id", requestId)
-                        .build();
+
+                // 새로운 요청 생성 (헤더 추가)
+                ServerHttpRequest decoratedRequest = new ServerHttpRequestDecorator(exchange.getRequest()) {
+                    @Override
+                    public HttpHeaders getHeaders() {
+                        HttpHeaders headers = new HttpHeaders();
+                        headers.putAll(super.getHeaders());
+                        headers.add("X-User-Email", requestEmail);
+                        headers.add("X-Request-Id", requestId);
+                        return headers;
+                    }
+                };
+
+                // 새 요청으로 교체한 exchange 전달
+                ServerWebExchange mutatedExchange = exchange.mutate().request(decoratedRequest).build();
 
                 // MDC에 로그 정보 저장
                 MDC.put("email", requestEmail);
                 MDC.put("requestId", requestId);
-
-                exchange = exchange.mutate().request(mutatedRequest).build();
 
                 // 권한 체크
                 String role = claims.get("auth", String.class);
                 if (role == null || !config.getAllowedRoles().contains(role)) {
                     return forbiddenResponse(exchange, "access denied");
                 }
+
+                return chain.filter(mutatedExchange);
             } catch(ExpiredJwtException ej) {
                 try {
                     log.info("액세스 토큰 만료");
@@ -157,7 +166,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
                 return unauthorizedResponse(exchange, "invalid token");
             }
 
-            return chain.filter(exchange);
+            //return chain.filter(exchange);
         });
     }
 
@@ -177,14 +186,14 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
     }
 
     // 성공 응답 처리
-    private Mono<Void> sendResponse(ServerWebExchange exchange, HttpStatus status, String message, String accessToekn) {
+    private Mono<Void> sendResponse(ServerWebExchange exchange, HttpStatus status, String message, String accessToken) {
         exchange.getResponse().setStatusCode(status);
         exchange.getResponse().getHeaders().setContentType(MediaType.APPLICATION_JSON);
 
         ReissuedResponse successResponse = ReissuedResponse.builder()
                 .statusCode(status.value())
                 .message(message)
-                .accessToken(accessToekn)
+                .accessToken(accessToken)
                 .build();
 
         return writeResponse(exchange, successResponse);
