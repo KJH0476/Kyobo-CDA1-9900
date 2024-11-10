@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -21,6 +22,7 @@ public class User {
 
     @Id
     @Comment("회원 고유 번호")
+    @UuidGenerator
     @Column(name = "id", nullable = false, updatable = false)
     private UUID id;
 
@@ -53,7 +55,6 @@ public class User {
 
     @PrePersist
     public void prePersist() {
-        id = UUID.randomUUID();
         createdAt = LocalDateTime.now();
         updatedAt = LocalDateTime.now();
     }
