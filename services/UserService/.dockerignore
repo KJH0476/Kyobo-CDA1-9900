@@ -1,0 +1,30 @@
+# 빌드 관련 파일 및 폴더
+.gradle/
+target/
+build/
+
+# 소스 코드 관리 관련 파일
+.git
+.gitignore
+.gitattributes
+
+# 개발 및 테스트 관련 파일
+.DS_Store
+.idea/
+*.iml
+*.log
+.vscode/
+test/
+src/test/
+bin/
+
+# 환경 파일
+.env
+*.env
+.env.*
+
+# IDE 설정 파일 및 기타 무시할 파일
+*.class
+*.jar
+*.war
+*.ear
