@@ -1,0 +1,231 @@
+.restaurant-info-container {
+  padding: 20px;
+}
+
+.restaurant-header {
+  margin-bottom: 24px;
+}
+
+.restaurant-header h2 {
+  margin: 0 0 8px 0;
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.restaurant-meta {
+  display: flex;
+  gap: 12px;
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.restaurant-address {
+  color: #444;
+  font-size: 14px;
+  margin: 0;
+}
+
+.menu-section {
+  margin-bottom: 24px;
+}
+
+.menu-section h3 {
+  font-size: 18px;
+  margin-bottom: 16px;
+}
+
+.menu-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.menu-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: start;
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 8px;
+}
+
+.menu-info h4 {
+  margin: 0 0 4px 0;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+.menu-description {
+  color: #666;
+  font-size: 14px;
+  margin: 0;
+}
+
+.menu-price {
+  font-weight: 500;
+  color: #333;
+}
+
+.reservation-button {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  padding: 12px 24px;
+  background-color: #03c75a;
+  color: white;
+  border: none;
+  border-radius: 24px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  transition: all 0.2s;
+}
+
+.reservation-button:hover {
+  background-color: #02b550;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* 예약 폼 스타일 */
+.reservation-form {
+  padding: 20px;
+}
+
+.date-selection,
+.time-selection,
+.people-selection {
+  margin-bottom: 24px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+}
+
+.date-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.time-slot {
+  padding: 12px;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  background-color: white;
+  width: 100%;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.time-slot:hover {
+  background-color: #f5f5f5;
+}
+
+/* 예약된 시간 버튼 스타일 */
+.time-slot.reservation-disabled {
+  background-color: #e9ecef;  /* 회색 배경 */
+  color: #868e96;  /* 회색 텍스트 */
+  border: 1px solid #dee2e6;
+  cursor: not-allowed;
+  pointer-events: none;  /* 클릭 불가능 */
+}
+
+.time-slot.selected {
+  background-color: #00C471;  /* 네이버 예약 스타일의 초록색 */
+  color: white;
+  border-color: #00C471;
+}
+
+.people-counter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.counter-btn {
+  width: 32px;
+  height: 32px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+}
+
+.submit-reservation {
+  width: 100%;
+  padding: 12px;
+  background-color: #03c75a;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+  margin-top: 20px;
+}
+
+.detail-panel {
+  position: fixed;
+  left: 450px; /* 검색 모달 너비(400px) + 여백(50px) */
+  top: 60px;
+  width: 400px;
+  height: calc(100vh - 60px);
+  background: white;
+  box-shadow: 2px 0 8px rgba(0, 0, 0, 0.1);
+  z-index: 100;
+  overflow-y: auto;
+  transition: transform 0.3s ease-in-out;
+  /* 모달이 오른쪽에서 슬라이드되어 나오는 효과 */
+  transform: translateX(0);
+}
+.close-button {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: none;
+  border: none;
+  font-size: 24px;
+  cursor: pointer;
+  color: #666;
+}
+.submit-reservation.waitlist-button {
+  background-color: #ffc107;  /* 노란색 */
+  color: #000;
+}
+
+.submit-reservation.waitlist-button:hover {
+  background-color: #ffca2c;
+}
+
+.waitlist-button {
+  background-color: #ff9800;
+}
+
+.waitlist-notice {
+  color: #ff9800;
+  margin-top: 10px;
+  font-size: 0.9em;
+}
+
+.booked {
+  background-color: #f5f5f5;
+  cursor: pointer;
+}
+
+.booked-label {
+  font-size: 0.8em;
+  color: #666;
+}

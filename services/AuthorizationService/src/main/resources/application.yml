@@ -1,0 +1,48 @@
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: health_check
+          uri: no://op
+          predicates:
+            - Path=/health
+        - id: pass_user_service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/pass/**
+          filters:
+            - StripPrefix=1
+        - id: user_service
+          uri: http://localhost:8081
+          predicates:
+            - Path=/user/**
+          filters:
+            - StripPrefix=1
+            - name: AuthorizationFilter
+              args:
+                allowedRoles:
+                  - USER
+                  - ADMIN
+        - id: notification_service
+          uri: http://localhost:8082
+          predicates:
+            - Path=/notify/**
+          filters:
+            - StripPrefix=1
+        - id: search_service
+          uri: http://localhost:8083
+          predicates:
+            - Path=/search/**
+          filters:
+            - StripPrefix=1
+        - id: reservation_service
+          uri: http://localhost:8084
+          predicates:
+            - Path=/reservation/**
+          filters:
+            - StripPrefix=1
+            - name: AuthorizationFilter
+              args:
+                allowedRoles:
+                  - USER
+                  - ADMIN
