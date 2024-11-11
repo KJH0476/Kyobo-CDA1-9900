@@ -9,7 +9,7 @@ spring:
         - id: pass_user_service
           uri: http://localhost:8081
           predicates:
-            - Path=/oauth/google/**
+            - Path=/pass/**
           filters:
             - StripPrefix=1
         - id: user_service
@@ -29,27 +29,16 @@ spring:
             - Path=/notify/**
           filters:
             - StripPrefix=1
-            - name: AuthorizationFilter
-              args:
-                allowedRoles:
-                  - USER
-                  - ADMIN
-        - id: pass_email_service
-          uri: http://localhost:8082
-          predicates:
-            - Path=/email_auth/**
-          filters:
-            - StripPrefix=1
-        - id: restaurant_service
+        - id: search_service
           uri: http://localhost:8083
           predicates:
-            - Path=/restaurant/**
+            - Path=/search/**
           filters:
             - StripPrefix=1
         - id: reservation_service
           uri: http://localhost:8084
           predicates:
-            - Path=/reserve/**
+            - Path=/reservation/**
           filters:
             - StripPrefix=1
             - name: AuthorizationFilter
