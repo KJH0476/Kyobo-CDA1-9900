@@ -48,9 +48,9 @@ public class ReservationController {
     }
 
     // 예약 취소
-    @DeleteMapping("/{reservationId}/cancel")
-    public ResponseEntity<ReservationResponseDto> cancelReservation(@RequestBody ReservationRequestDto request, @PathVariable UUID reservationId) {
-        reservationService.cancelReservation(request, reservationId);
+    @DeleteMapping("/cancel/{reservationId}")
+    public ResponseEntity<ReservationResponseDto> cancelReservation(@PathVariable UUID reservationId) {
+        reservationService.cancelReservation(reservationId);
         return new ResponseEntity<>(ReservationResponseDto.builder()
                 .statusCode(HttpStatus.OK.value())
                 .message("예약이 취소되었습니다.")

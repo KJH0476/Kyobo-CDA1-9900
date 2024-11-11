@@ -81,12 +81,12 @@ public class ReservationService {
 
     // 예약 취소 메서드
     @Transactional
-    public void cancelReservation(ReservationRequestDto request, UUID reservationId) {
+    public void cancelReservation(UUID reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 예약을 찾을 수 없습니다."));
 
         RestaurantAvailability availability = restaurantAvailabilityRepository.findByRestaurantIdAndReservationDateAndReservationTime(
-                        request.getRestaurantId(), request.getReservationDate(), request.getReservationTime())
+                        reservation.getRestaurantId(), reservation.getReservationDateTime().toLocalDate(), reservation.getReservationDateTime().toLocalTime())
                 .map(restaurantAvailability -> {
                     log.info("예약 취소: {}", reservation);
                     restaurantAvailability.setAvailableTables(restaurantAvailability.getAvailableTables() + 1);
