@@ -7,13 +7,13 @@ spring:
           predicates:
             - Path=/health
         - id: pass_user_service
-          uri: http://localhost:8081
+          uri: ${USER_SERVICE_URI:http://localhost:8081}
           predicates:
             - Path=/pass/**
           filters:
             - StripPrefix=1
         - id: user_service
-          uri: http://localhost:8081
+          uri: ${USER_SERVICE_URI:http://localhost:8081}
           predicates:
             - Path=/user/**
           filters:
@@ -24,19 +24,19 @@ spring:
                   - USER
                   - ADMIN
         - id: notification_service
-          uri: http://localhost:8082
+          uri: ${NOTIFICATION_SERVICE_URI:http://localhost:8082}
           predicates:
             - Path=/notify/**
           filters:
             - StripPrefix=1
         - id: search_service
-          uri: http://localhost:8083
+          uri: ${SEARCH_SERVICE_URI:http://localhost:8083}
           predicates:
             - Path=/search/**
           filters:
             - StripPrefix=1
         - id: reservation_service
-          uri: http://localhost:8084
+          uri: ${RESERVATION_SERVICE_URI:http://localhost:8084}
           predicates:
             - Path=/reservation/**
           filters:
