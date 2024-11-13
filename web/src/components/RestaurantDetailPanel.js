@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import "./RestaurantDetailPanel.css";
+//import { createReservation, registerWaitlist, getAvailabilityTimeSlots } from "../api/reservation"; // 경로는 실제 파일 구조에 맞게 조정
 
 const RestaurantDetailPanel = ({ restaurant, onClose }) => {
   const [showReservation, setShowReservation] = useState(false);
@@ -8,6 +9,7 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
   const [peopleCount, setPeopleCount] = useState(1);
   const [bookedTimeSlots, setBookedTimeSlots] = useState(new Set());
   const [isWaitlist, setIsWaitlist] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const menus = {
     "신촌 파스타": [
@@ -20,28 +22,25 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
   };
 
   const restaurantMenus = menus[restaurant.name] || [];
-
   const timeSlots = [
-    "11:00", "11:30", "12:00", "12:30", "13:00", "13:30",
- 
+    "11:00", "11:30", "12:00", "12:30", "13:00", "13:30", "14:00",
+    "14:30", "15:00", "15:30", "16:00", "16:30", "17:00"
   ];
 
   useEffect(() => {
     if (selectedDate) {
       const reservations = JSON.parse(localStorage.getItem("reservations") || "[]");
       const waitlist = JSON.parse(localStorage.getItem("waitlist") || "[]");
-      
       const bookedTimes = new Set(
         reservations
-          .filter(r => r.restaurant === restaurant.name && r.date === selectedDate)
-          .map(r => r.time)
+          .filter(r => r.restaurantId === restaurant.id && 
+                      r.reservationDate === selectedDate)
+          .map(r => r.reservationTime)
       );
       setBookedTimeSlots(bookedTimes);
-
-      // 선택된 시간이 예약됐는지 확인하고 waitlist 상태 업데이트
       setIsWaitlist(bookedTimes.has(selectedTime));
     }
-  }, [selectedDate, selectedTime, restaurant.name]);
+  }, [selectedDate, selectedTime, restaurant.id]);
 
   const handlePeopleChange = (increment) => {
     const newCount = peopleCount + increment;
@@ -50,7 +49,9 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
     }
   };
 
-  const handleSubmitReservation = () => {
+
+  
+  const handleSubmitReservation = async () => {
     if (!selectedDate || !selectedTime) {
       alert("날짜와 시간을 선택해주세요.");
       return;
@@ -63,18 +64,115 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
     }
 
     const reservationData = {
-      userId: currentUser.id,
-      restaurant: restaurant.name,
-      date: selectedDate,
-      time: selectedTime,
-      people: peopleCount,
-      createdAt: new Date().toISOString(),
+      restaurantId: restaurant.id,
+      userEmail: currentUser.email,
+      reservationDate: selectedDate,
+      reservationTime: selectedTime,
+      numberOfGuests: peopleCount,
+      restaurantName: restaurant.name
     };
 
-    if (isWaitlist) {
-      handleWaitlist(reservationData);
-    } else {
-      handleNormalReservation(reservationData);
+    try {
+
+      setIsLoading(true);
+
+      // 예약 가능 시간대 API 호출
+     /*
+      const availabilityResponse = await getAvailabilityTimeSlots(
+        restaurant.id,
+        jwtToken,
+        currentUser.email
+      );
+
+      if (availabilityResponse.statusCode === 200) {
+        const availableTimes = availabilityResponse.availabilityTimeList;
+        const isAvailable = availableTimes.some(
+          (timeSlot) =>
+            timeSlot.reservationDate === selectedDate &&
+            timeSlot.reservationTime === selectedTime &&
+            timeSlot.availableTables > 0
+        );
+
+        if (!isAvailable) {
+          alert("예약 가능 시간대 조회에 실패했습니다.");
+          return;
+        }
+      } else {
+        alert("예약 가능 시간대 조회에 실패했습니다.");
+        return;
+      }
+      */
+
+
+      // 백엔드 API 호출 부분 주석 처리 
+      // 예약 생성 API 호출 o 부분 주석 해제
+      /*
+      const response = await createReservation(reservationData, jwtToken);
+
+    if (response.statusCode === 201) {
+      // 예약 생성 성공
+      const reservationDetails = response.reservationDto; // reservationDto 데이터 접근
+      alert(
+        `예약이 완료되었습니다!\n예약 ID: ${reservationDetails.reservationId}\n식당: ${reservationDetails.restaurantId}\n날짜 및 시간: ${reservationDetails.reservationDateTime}\n인원: ${reservationDetails.numberOfGuests}`
+      );
+    } else if (response.status === "waiting") {
+      // 대기 목록 등록
+      alert(`대기 목록에 등록되었습니다. 대기 순번: ${response.position}`);
+    }
+
+  onClose(); // 예약 완료 후 화면 닫기
+} catch (error) {
+  console.error("예약 생성 실패:", error);
+  alert("예약 생성에 실패했습니다. 다시 시도해주세요.");
+}
+
+      // 예약 대기 등록 API 호출 부분 주석 처리
+      /*
+      const jwtToken = currentUser.jwtToken; // JWT 토큰이 있는 경우
+
+      const waitlistData = {
+        restaurantId: restaurant.id,
+        userEmail: currentUser.email,
+        reservationDate: selectedDate,
+        reservationTime: selectedTime,
+        numberOfGuests: peopleCount
+      };
+
+      // 예약 대기 API 호출 o
+      const waitlistResponse = await registerWaitlist(waitlistData, jwtToken);
+
+      if (waitlistResponse.statusCode === 201) {
+        const waitListDetails = waitlistResponse.waitListDto;
+
+         alert(
+            `예약 대기가 등록되었습니다!\n` +
+            `대기 ID: ${waitListDetails.waitListId}\n` +
+            `식당: ${waitListDetails.restaurantName}\n` +
+            `예약 날짜 및 시간: ${waitListDetails.reservationDateTime}`
+          );
+       } else {
+         alert("예약 대기 등록에 실패했습니다.");
+       }
+
+      onClose();
+      */
+
+      // API 호출 시 아래 LocalStorage 필요없음
+      // localStorage를 이용한 예약 처리 로직
+
+      // 이미 예약된 시간인지 확인
+      const isTimeSlotBooked = bookedTimeSlots.has(selectedTime);
+      
+      if (isTimeSlotBooked) {
+        // 대기 리스트로 처리
+        handleWaitlist(reservationData);
+      } else {
+        // 일반 예약 처리
+        handleNormalReservation(reservationData);
+      }
+    } catch (error) {
+      console.error("예약 처리 중 오류:", error);
+      alert("예약 처리 중 문제가 발생했습니다. 다시 시도해주세요.");
     }
   };
 
@@ -83,10 +181,10 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
     
     // 대기 목록에 이미 있는지 확인
     const isAlreadyWaitlisted = waitlist.some(
-      w => w.userId === reservationData.userId && 
-          w.restaurant === reservationData.restaurant && 
-          w.date === reservationData.date && 
-          w.time === reservationData.time
+      w => w.userEmail === reservationData.userEmail && 
+          w.restaurantId === reservationData.restaurantId && 
+          w.reservationDate === reservationData.reservationDate && 
+          w.reservationTime === reservationData.reservationTime
     );
 
     if (isAlreadyWaitlisted) {
@@ -94,13 +192,17 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
       return;
     }
 
-    waitlist.push({
+    // 대기 정보 추가
+    const waitlistEntry = {
       ...reservationData,
       status: 'waiting',
-      position: waitlist.length + 1
-    });
+      position: waitlist.length + 1,
+      registeredAt: new Date().toISOString()
+    };
     
+    waitlist.push(waitlistEntry);
     localStorage.setItem("waitlist", JSON.stringify(waitlist));
+    
     alert(`대기 목록에 등록되었습니다. 대기 순번: ${waitlist.length}`);
     onClose();
   };
@@ -108,21 +210,29 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
   const handleNormalReservation = (reservationData) => {
     const reservations = JSON.parse(localStorage.getItem("reservations") || "[]");
     
+    // 다시 한번 예약 가능 여부 확인
     const isTimeSlotBooked = reservations.some(
-      r => r.restaurant === restaurant.name && 
-          r.date === selectedDate && 
-          r.time === selectedTime
+      r => r.restaurantId === reservationData.restaurantId && 
+          r.reservationDate === reservationData.reservationDate && 
+          r.reservationTime === reservationData.reservationTime
     );
 
     if (isTimeSlotBooked) {
-      setIsWaitlist(true);
+      // 이미 예약되었다면 대기 리스트로 전환
       handleWaitlist(reservationData);
       return;
     }
 
-    reservations.push(reservationData);
+    // 예약 정보 추가
+    const reservationEntry = {
+      ...reservationData,
+      status: 'confirmed',
+      createdAt: new Date().toISOString()
+    };
+    
+    reservations.push(reservationEntry);
     localStorage.setItem("reservations", JSON.stringify(reservations));
-    setBookedTimeSlots(prev => new Set([...prev, selectedTime]));
+    setBookedTimeSlots(prev => new Set([...prev, reservationData.reservationTime]));
     alert("예약이 완료되었습니다!");
     onClose();
   };
@@ -130,7 +240,6 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
   const ReservationForm = () => (
     <div className="reservation-form">
       <h3>예약하기</h3>
-
       <div className="date-selection">
         <label>날짜 선택</label>
         <input
@@ -145,7 +254,6 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           min={new Date().toISOString().split("T")[0]}
         />
       </div>
-
       <div className="time-selection">
         <label>시간 선택</label>
         <div className="time-grid">
@@ -168,7 +276,6 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           })}
         </div>
       </div>
-
       <div className="people-selection">
         <label>인원 선택</label>
         <div className="people-counter">
@@ -189,7 +296,6 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           </button>
         </div>
       </div>
-
       {(selectedDate || selectedTime || peopleCount > 1) && (
         <div className="reservation-summary">
           <h4>예약 정보</h4>
@@ -214,7 +320,6 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           </div>
         </div>
       )}
-
       <button
         className={`submit-reservation ${!selectedDate || !selectedTime ? "disabled" : ""} 
                   ${isWaitlist ? "waitlist-button" : ""}`}
@@ -237,7 +342,6 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
         </div>
         <p className="restaurant-address">{restaurant.address}</p>
       </div>
-
       <div className="menu-section">
         <h3>메뉴</h3>
         <div className="menu-list">
@@ -252,7 +356,6 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           ))}
         </div>
       </div>
-
       <button
         className="reservation-button"
         onClick={() => setShowReservation(true)}
