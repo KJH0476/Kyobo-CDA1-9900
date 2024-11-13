@@ -17,6 +17,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.web.client.RestTemplate;
@@ -177,6 +179,92 @@ public class ReservationTest {
         });
 
         assertEquals("예약 가능한 자리가 없습니다.", exception.getMessage());
+    }
+
+    @Test
+    void 예약취소_성공_테스트() {
+        // Given
+        UUID reservationId = reservation.getId();
+
+        // 예약이 존재함을 Mock
+        when(reservationRepository.findById(reservationId))
+                .thenReturn(Optional.of(reservation));
+
+        // 예약과 연결된 가용성 정보 반환
+        when(restaurantAvailabilityRepository.findByRestaurantIdAndReservationDateAndReservationTime(
+                reservation.getRestaurantId(),
+                reservation.getReservationDateTime().toLocalDate(),
+                reservation.getReservationDateTime().toLocalTime()))
+                .thenReturn(Optional.of(availability));
+
+        // 대기 목록에 등록된 사용자 Mock
+        WaitList waitList1 = WaitList.builder()
+                .id(UUID.randomUUID())
+                .restaurantId(availability.getRestaurantId())
+                .userEmail("wait1@example.com")
+                .availability(availability)
+                .numberOfGuests(2)
+                .build();
+
+        WaitList waitList2 = WaitList.builder()
+                .id(UUID.randomUUID())
+                .restaurantId(availability.getRestaurantId())
+                .userEmail("wait2@example.com")
+                .availability(availability)
+                .numberOfGuests(3)
+                .build();
+
+        List<WaitList> waitListEntries = Arrays.asList(waitList1, waitList2);
+
+        when(waitListRepository.findByAvailability(availability))
+                .thenReturn(waitListEntries);
+
+        // 가용성 정보 저장 시 업데이트된 객체 반환
+        when(restaurantAvailabilityRepository.save(any(RestaurantAvailability.class)))
+                .thenReturn(availability);
+
+        // Notification 서버로의 알림 전송 Mock
+        when(restTemplate.exchange(
+                contains("/notification/cancel"),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(String.class)))
+                .thenReturn(ResponseEntity.ok("Cancel Success"));
+
+        when(restTemplate.exchange(
+                contains("/notification/waiting"),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(String.class)))
+                .thenReturn(ResponseEntity.ok("Waiting Notification Success"));
+
+        // When
+        reservationService.cancelReservation(reservationId);
+
+        // Then
+        // 예약이 삭제되었는지 확인
+        verify(reservationRepository, times(1)).deleteById(reservationId);
+
+        // 가용 테이블 수가 1 증가했는지 확인
+        assertEquals(availability.getAvailableTables(), 6); // 초기 5에서 1 증가
+        verify(restaurantAvailabilityRepository, times(1)).save(availability);
+
+        // 예약 취소 알림이 전송되었는지 확인
+        verify(restTemplate, times(1)).exchange(
+                contains("/notification/cancel"),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(String.class));
+
+        // 대기 목록 알림이 전송되었는지 확인
+        verify(restTemplate, times(1)).exchange(
+                contains("/notification/waiting"),
+                eq(HttpMethod.POST),
+                any(HttpEntity.class),
+                eq(String.class));
+
+        // 대기 목록이 삭제되었는지 확인
+        verify(waitListRepository, times(1)).deleteAll(waitListEntries);
     }
 
     @Test
