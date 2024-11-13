@@ -36,14 +36,13 @@ export const fetchReservations = async (email, jwtToken) => {
 
 export const cancelReservation = async (reservationId, jwtToken, cancellationData) => {
   try {
-    const response = await fetch(`${BASE_URL}/reservation/${reservationId}/cancel`, {
+    const response = await fetch(`${BASE_URL}/reservation/cancel/${reservationId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${jwtToken}`,
         "Content-Type": "application/json",
         "X-User-Email": cancellationData.userEmail,
       },
-      body: JSON.stringify(cancellationData),
     });
 
     if (!response.ok) {
@@ -83,3 +82,50 @@ export const createReservation = async (reservationData, jwtToken) => {
     }
   };
   
+
+//예약 대기 API 함수 
+export const registerWaitlist = async (waitlistData, jwtToken) => {
+  try {
+     const response = await fetch(`${BASE_URL}/reservation/waiting`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "Content-Type": "application/json",
+        "X-User-Email": waitlistData.userEmail,
+      },
+      body: JSON.stringify(waitlistData),
+    });
+  
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "예약 대기 등록에 실패했습니다.");
+    }
+  
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
+
+// 예약 가능 시간대 조회 API 함수
+export const getAvailabilityTimeSlots = async (restaurantId, jwtToken) => {
+  try {
+    const response = await fetch(`${BASE_URL}/reservation/availability/${restaurantId}`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${jwtToken}`,
+        "X-User-Email": "test@test.com", // 실제 사용자 이메일로 변경
+        "Content-Type": "application/json",
+      },
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(error.message || "예약 가능 시간대 조회에 실패했습니다.");
+    }
+
+    return await response.json();
+  } catch (error) {
+    throw error;
+  }
+};
