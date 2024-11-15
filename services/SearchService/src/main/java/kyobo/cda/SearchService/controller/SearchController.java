@@ -7,14 +7,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Service;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
 @Slf4j
-@Service
+@RestController
 @RequiredArgsConstructor
 public class SearchController {
 
@@ -23,13 +24,13 @@ public class SearchController {
     @GetMapping("/restaurants")
     public ResponseEntity<SearchResponseDto> search(
             @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "category", required = false) List<String> categorys,
+            @RequestParam(value = "category", required = false) List<String> categories,
             @RequestParam(value = "address", required = false) String address,
             @RequestParam(value = "searchAfter", required = false) Object[] searchAfter
     ) {
 
         try {
-            SearchResult searchResult = searchService.searchRestaurant(title, categorys, address, searchAfter);
+            SearchResult searchResult = searchService.searchRestaurant(title, categories, address, searchAfter);
 
             return new ResponseEntity<>(SearchResponseDto.builder()
                     .statusCode(HttpStatus.OK.value())
