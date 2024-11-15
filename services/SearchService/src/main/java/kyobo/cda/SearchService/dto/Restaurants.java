@@ -15,13 +15,14 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Restaurants {
 
-    private UUID restaurantId;
-    private String restaurantName;
+    private String id;
+    private String restaurant_name;
     private String address;
-    private List<Menu> menus;
-    private List<String> category;
-    private String phoneNumber;
-    private String description;
-    private Timestamp createdAt;
-    private Timestamp updatedAt;
+    private List<Menu> menu;
+    private List<String> food_type;
+    private String phone_number;
+    private boolean availability;
+    private double longitude;
+    private double latitude;
+    private long update_at;
 }

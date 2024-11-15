@@ -11,9 +11,7 @@ import java.util.UUID;
 @AllArgsConstructor
 public class Menu {
 
-    private UUID restaurantId;
-    private String menuName;
-    private int price;
-    private String description;
-    private String imageUrl;
+    private String menu_name;
+    private double menu_price;
+    private String image_url;
 }

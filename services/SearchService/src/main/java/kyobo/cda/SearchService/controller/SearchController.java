@@ -23,14 +23,14 @@ public class SearchController {
 
     @GetMapping("/restaurants")
     public ResponseEntity<SearchResponseDto> search(
-            @RequestParam(value = "title", required = false) String title,
-            @RequestParam(value = "category", required = false) List<String> categories,
+            @RequestParam(value = "restaurant_name", required = false) String restaurantName,
+            @RequestParam(value = "food_type", required = false) List<String> foodType,
             @RequestParam(value = "address", required = false) String address,
             @RequestParam(value = "searchAfter", required = false) Object[] searchAfter
     ) {
 
         try {
-            SearchResult searchResult = searchService.searchRestaurant(title, categories, address, searchAfter);
+            SearchResult searchResult = searchService.searchRestaurant(restaurantName, foodType, address, searchAfter);
 
             return new ResponseEntity<>(SearchResponseDto.builder()
                     .statusCode(HttpStatus.OK.value())

@@ -32,7 +32,7 @@ public class SearchService {
     private final RestHighLevelClient restHighLevelClient;
     private final ObjectMapper objectMapper;
 
-    public SearchResult searchRestaurant(String title, List<String> categories, String address, Object[] searchAfter) throws IOException {
+    public SearchResult searchRestaurant(String restaurant_name, List<String> food_type, String address, Object[] searchAfter) throws IOException {
         log.info("식당 검색");
 
         SearchRequest searchRequest = new SearchRequest(index);
@@ -40,23 +40,20 @@ public class SearchService {
 
         BoolQueryBuilder boolQuery = QueryBuilders.boolQuery();
 
-        // 제목 필터링
-        if (title != null && !title.isEmpty()) {
-            boolQuery.must(QueryBuilders.matchQuery("title", title));
+        if (restaurant_name != null && !restaurant_name.isEmpty()) {
+            boolQuery.must(QueryBuilders.matchQuery("restaurant_name", restaurant_name));
         }
 
-        // 스킬 필터링
-        if (categories != null && !categories.isEmpty()) {
-            boolQuery.filter(QueryBuilders.termsQuery("categories", categories));
+        if (food_type != null && !food_type.isEmpty()) {
+            boolQuery.filter(QueryBuilders.termsQuery("food_type", food_type));
         }
 
-        // 경력 유형 필터링
         if (address != null && !address.isEmpty()) {
             boolQuery.filter(QueryBuilders.matchQuery("address", address));
         }
 
         sourceBuilder.sort("_id", SortOrder.ASC);
-        sourceBuilder.sort("updatedAt", SortOrder.DESC);
+        sourceBuilder.sort("update_at", SortOrder.DESC);
 
         // search_after 설정
         if (searchAfter != null && searchAfter.length > 0) {
@@ -73,6 +70,8 @@ public class SearchService {
                 RequestOptions.DEFAULT.toBuilder()
                         .addHeader("Content-Type", ContentType.APPLICATION_JSON.getMimeType())
                         .build());
+
+        log.info("searchResponse: {}", searchResponse.toString());
 
         List<Restaurants> restaurantResults = new ArrayList<>();
         SearchHit[] hits = searchResponse.getHits().getHits();
