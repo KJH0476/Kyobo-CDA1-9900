@@ -31,13 +31,14 @@ dependencies {
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
 
 	// aws
-	implementation group: 'software.amazon.awssdk', name: 'opensearch', version: '2.27.24'
+	// AWS SDK v1
+	implementation 'com.amazonaws:aws-java-sdk-core:1.12.700'
 	implementation 'software.amazon.awssdk:auth:2.27.24'
 
-	// opensearch
-	implementation 'org.opensearch.client:opensearch-rest-high-level-client:2.17.0'
+	// OpenSearch
+	implementation 'org.opensearch.client:opensearch-rest-high-level-client:2.16.0'
 
-	// apache
+	// Apache HttpClient
 	implementation group: 'org.apache.httpcomponents', name: 'httpclient', version: '4.5.13'
 
 	// log
