@@ -33,7 +33,6 @@ dependencies {
 	// aws
 	// AWS SDK v1
 	implementation 'com.amazonaws:aws-java-sdk-core:1.12.700'
-	implementation 'software.amazon.awssdk:auth:2.27.24'
 
 	// OpenSearch
 	implementation 'org.opensearch.client:opensearch-rest-high-level-client:2.16.0'
