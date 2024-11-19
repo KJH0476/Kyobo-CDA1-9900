@@ -60,7 +60,7 @@ public class SearchService {
             log.info("search after");
             sourceBuilder.searchAfter(searchAfter);
         }
-        sourceBuilder.size(20);
+        sourceBuilder.size(10);
         sourceBuilder.query(boolQuery);
         searchRequest.source(sourceBuilder);
 
