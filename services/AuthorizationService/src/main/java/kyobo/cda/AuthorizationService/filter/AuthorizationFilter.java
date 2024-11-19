@@ -1,6 +1,5 @@
 package kyobo.cda.AuthorizationService.filter;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -13,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.factory.AbstractGatewayFilterFactory;
+import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -21,8 +21,10 @@ import org.springframework.http.server.reactive.ServerHttpRequestDecorator;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -128,7 +130,7 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
                     return forbiddenResponse(exchange, "access denied");
                 }
 
-                return chain.filter(mutatedExchange);
+                return chain.filter(exchange);
             } catch(ExpiredJwtException ej) {
                 try {
                     log.info("액세스 토큰 만료");
@@ -214,17 +216,18 @@ public class AuthorizationFilter extends AbstractGatewayFilterFactory<Authorizat
 
     // JSON 변환 및 응답 작성 로직을 공통 메서드로 분리
     private Mono<Void> writeResponse(ServerWebExchange exchange, ReissuedResponse errorResponse) {
-        try {
-            // 객체를 JSON 형식으로 변환
-            String responseBody = objectMapper.writeValueAsString(errorResponse);
-            byte[] bytes = responseBody.getBytes(StandardCharsets.UTF_8);
-
-            return exchange.getResponse().writeWith(Mono.just(exchange.getResponse()
-                    .bufferFactory().wrap(bytes)));
-        } catch (JsonProcessingException e) {
-            exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
-            return exchange.getResponse().setComplete();
-        }
+        return Mono.fromCallable(() -> {
+                    // 객체를 JSON 형식으로 변환
+                    String responseBody = objectMapper.writeValueAsString(errorResponse);
+                    byte[] bytes = responseBody.getBytes(StandardCharsets.UTF_8);
+                    DataBuffer buffer = exchange.getResponse().bufferFactory().wrap(bytes);
+                    return buffer;
+                })
+                .subscribeOn(Schedulers.boundedElastic()) // 블로킹 코드를 별도의 쓰레드에서 실행
+                .flatMap(dataBuffer -> exchange.getResponse().writeWith(Mono.just(dataBuffer)))
+                .doOnError(error -> {
+                    exchange.getResponse().setStatusCode(HttpStatus.INTERNAL_SERVER_ERROR);
+                });
     }
 
     // 필터 설정 값
