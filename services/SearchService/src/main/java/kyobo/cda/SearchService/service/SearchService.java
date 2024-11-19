@@ -80,7 +80,7 @@ public class SearchService {
                 Restaurants restaurant = objectMapper.readValue(hit.getSourceAsString(), Restaurants.class);
                 restaurantResults.add(restaurant);
             } catch (IOException e) {
-                log.info("Failed to parse search response", e);
+                log.error("Failed to parse search response", e);
             }
         }
 
