@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import "./SimpleLogin.css";
-// import { login } from '../api/auth';  // API 호출 함수 주석 처리
+import { login } from '../api/auth';  // API 호출 함수 주석 처리
 
 const SimpleLogin = () => {
   const navigate = useNavigate();
@@ -12,11 +12,10 @@ const SimpleLogin = () => {
 
   const [error, setError] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     // {로그인 api 호출 시작부분}
-    /*
     try {
       // API 호출 시도
       const response = await login(formData.email, formData.password);
@@ -39,12 +38,11 @@ const SimpleLogin = () => {
       console.error('로그인 에러:', error);
       // API 오류 발생
     }
-    */
 
     // 로컬 스토리지 방식으로 로그인 처리
     const users = JSON.parse(localStorage.getItem("users") || "[]");
     const user = users.find(
-      (u) => u.email === formData.email && u.password === formData.password
+        (u) => u.email === formData.email && u.password === formData.password
     );
 
     if (user) {

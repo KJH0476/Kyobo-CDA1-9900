@@ -1,4 +1,4 @@
-// 예약 관련 API
+import customFetch from "./apiClient";
 
 
 // 예약 정보 확인 API 호출 함수
@@ -6,7 +6,7 @@ const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export const fetchReservations = async (email, jwtToken) => {
   try {
-    const response = await fetch(`${BASE_URL}/reservation/reservations/${email}`, {
+    const response = await customFetch(`${BASE_URL}/reservation/reservations/${email}`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${jwtToken}`,
@@ -28,20 +28,15 @@ export const fetchReservations = async (email, jwtToken) => {
   }
 };
 
-
-
-
-
 // 예약 취소 API 호출 함수
 
-export const cancelReservation = async (reservationId, jwtToken, cancellationData) => {
+export const cancelReservation = async (reservationId, jwtToken) => {
   try {
-    const response = await fetch(`${BASE_URL}/reservation/cancel/${reservationId}`, {
+    const response = await customFetch(`${BASE_URL}/reservation/cancel/${reservationId}`, {
       method: "DELETE",
       headers: {
         Authorization: `Bearer ${jwtToken}`,
         "Content-Type": "application/json",
-        "X-User-Email": cancellationData.userEmail,
       },
     });
 
@@ -56,12 +51,10 @@ export const cancelReservation = async (reservationId, jwtToken, cancellationDat
   }
 };
 
-
-
 // 예약 생성 API 호출 함수
 export const createReservation = async (reservationData, jwtToken) => {
     try {
-      const response = await fetch(`${BASE_URL}/reservation/create`, {
+      const response = await customFetch(`${BASE_URL}/reservation/create`, {
         method: "POST",
         headers: {
           Authorization: `Bearer ${jwtToken}`,
@@ -86,7 +79,7 @@ export const createReservation = async (reservationData, jwtToken) => {
 //예약 대기 API 함수 
 export const registerWaitlist = async (waitlistData, jwtToken) => {
   try {
-     const response = await fetch(`${BASE_URL}/reservation/waiting`, {
+     const response = await customFetch(`${BASE_URL}/reservation/waiting`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${jwtToken}`,
@@ -110,7 +103,7 @@ export const registerWaitlist = async (waitlistData, jwtToken) => {
 // 예약 가능 시간대 조회 API 함수
 export const getAvailabilityTimeSlots = async (restaurantId, jwtToken) => {
   try {
-    const response = await fetch(`${BASE_URL}/reservation/availability/${restaurantId}`, {
+    const response = await customFetch(`${BASE_URL}/reservation/availability/${restaurantId}`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${jwtToken}`,

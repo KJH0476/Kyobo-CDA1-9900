@@ -1,216 +1,142 @@
 import React, { useState } from "react";
 import "./SearchModal.css";
 
-const SearchModal = ({ isOpen, onClose, onSelectRestaurant }) => {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("");
+const SearchModal = ({ isOpen, onClose, onSelectRestaurant, userEmail }) => {
+  const [searchTerm, setSearchTerm] = useState(""); // 식당 이름 검색어
+  const [locationTerm, setLocationTerm] = useState(""); // 지역 검색어
+  const [selectedCategories, setSelectedCategories] = useState([]); // 선택된 카테고리
+  const [filteredRestaurants, setFilteredRestaurants] = useState([]); // 검색 결과
+  const [loading, setLoading] = useState(false); // 로딩 상태
+  const [error, setError] = useState(null); // 에러 상태
 
-  // 식당 데이터 (한식, 중식, 양식으로만 구분)
-  const restaurants = [
-    {
-      id: 1,
-      name: "신촌 파스타",
-      address: "서울시 서대문구 신촌로 123",
-      type: "양식",
-      rating: 4.5,
-      reviewCount: 123,
-      price: "15,000원",
-      lat: 37.556,
-      lng: 126.937,
-    },
-    {
-      id: 2,
-      name: "홍대 삼겹살",
-      address: "서울시 마포구 와우산로 48",
-      type: "한식",
-      rating: 4.7,
-      reviewCount: 543,
-      price: "18,000원",
-      lat: 37.557,
-      lng: 126.925,
-    },
-    {
-      id: 3,
-      name: "연남동 짬뽕",
-      address: "서울시 마포구 연남로 35",
-      type: "중식",
-      rating: 4.3,
-      reviewCount: 278,
-      price: "9,000원",
-      lat: 37.56,
-      lng: 126.923,
-    },
-    {
-      id: 4,
-      name: "이태원 스테이크",
-      address: "서울시 용산구 이태원로 154",
-      type: "양식",
-      rating: 4.6,
-      reviewCount: 892,
-      price: "35,000원",
-      lat: 37.534,
-      lng: 126.994,
-    },
-    {
-      id: 5,
-      name: "강남 순대국",
-      address: "서울시 강남구 강남대로 328",
-      type: "한식",
-      rating: 4.4,
-      reviewCount: 432,
-      price: "8,000원",
-      lat: 37.498,
-      lng: 127.027,
-    },
-    {
-      id: 6,
-      name: "명동 짜장면",
-      address: "서울시 중구 명동길 54",
-      type: "중식",
-      rating: 4.2,
-      reviewCount: 667,
-      price: "7,000원",
-      lat: 37.563,
-      lng: 126.983,
-    },
-    {
-      id: 7,
-      name: "을지로 곱창",
-      address: "서울시 중구 을지로 158",
-      type: "한식",
-      rating: 4.8,
-      reviewCount: 892,
-      price: "20,000원",
-      lat: 37.566,
-      lng: 126.985,
-    },
-    {
-      id: 8,
-      name: "연남 피자",
-      address: "서울시 마포구 동교로 248",
-      type: "양식",
-      rating: 4.5,
-      reviewCount: 445,
-      price: "13,000원",
-      lat: 37.561,
-      lng: 126.924,
-    },
-    {
-      id: 9,
-      name: "홍대 감자탕",
-      address: "서울시 마포구 와우산로 29",
-      type: "한식",
-      rating: 4.6,
-      reviewCount: 478,
-      price: "12,000원",
-      lat: 37.554,
-      lng: 126.925,
-    },
-    {
-      id: 10,
-      name: "이대 마라탕",
-      address: "서울시 서대문구 이화여대길 88",
-      type: "중식",
-      rating: 4.4,
-      reviewCount: 234,
-      price: "11,000원",
-      lat: 37.558,
-      lng: 126.946,
-    },
-  ];
+  const BASE_URL = process.env.REACT_APP_BASE_URL;
 
-  // 검색어와 카테고리로 필터링
-  const filteredRestaurants = restaurants.filter((restaurant) => {
-    const matchesSearch =
-      restaurant.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      restaurant.address.toLowerCase().includes(searchTerm.toLowerCase());
+  // 검색 버튼 클릭 시 Mock 데이터 필터링
+  const handleSearch = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const queryParams = new URLSearchParams({
+        restaurant_name: searchTerm || "",
+        address: locationTerm || "",
+        food_type: selectedCategories.length > 0 ? selectedCategories.join(",") : "",
+      }).toString();
+      const response = await fetch(`${BASE_URL}/search/restaurants?${queryParams}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "X-User-Email": userEmail,
+        },
+      });
+      if (!response.ok) {
+        throw new Error("검색에 실패했습니다.");
+      }
+      const data = await response.json();
+      if (data.statusCode === 200) {
+        setFilteredRestaurants(data.restaurants);
+      } else {
+        setFilteredRestaurants([]);
+        setError(data.message || "검색에 실패했습니다.");
+      }
 
-    if (selectedCategory) {
-      return matchesSearch && restaurant.type === selectedCategory;
-    }
-    return matchesSearch;
-  });
-
-  // 카테고리 선택 핸들러
-  const handleCategoryClick = (category) => {
-    if (selectedCategory === category) {
-      setSelectedCategory(""); // 같은 카테고리 다시 클릭하면 필터 해제
-    } else {
-      setSelectedCategory(category);
+    } catch (err) {
+      console.error("검색 중 오류 발생:", err);
+      setError("검색에 실패했습니다. 다시 시도해주세요.");
+    } finally {
+      setLoading(false);
     }
   };
-
-  if (!isOpen) return null;
-
+  // 카테고리 버튼 클릭 시 선택/해제
+  const handleCategoryClick = (category) => {
+    if (selectedCategories.includes(category)) {
+      setSelectedCategories(selectedCategories.filter((c) => c !== category));
+    } else {
+      setSelectedCategories([...selectedCategories, category]);
+    }
+  };
+  if (!isOpen) return null; // 모달이 닫힌 경우 null 반환
   return (
-    <div className="search-modal-left">
-      <div className="search-modal-content">
-        <div className="search-input-container">
-          <span className="search-icon">🔍</span>
-          <input
-            type="text"
-            placeholder="식당이름, 음식종류(한식,중식,양식), 지역을"
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="search-input"
-          />
-        </div>
-
-        <div className="category-buttons">
-          <button
-            className={`category-btn ${
-              selectedCategory === "한식" ? "active" : ""
-            }`}
-            onClick={() => handleCategoryClick("한식")}
-          >
-            <span className="category-icon">🍚</span>
-            한식
-          </button>
-          <button
-            className={`category-btn ${
-              selectedCategory === "중식" ? "active" : ""
-            }`}
-            onClick={() => handleCategoryClick("중식")}
-          >
-            <span className="category-icon">🥢</span>
-            중식
-          </button>
-          <button
-            className={`category-btn ${
-              selectedCategory === "양식" ? "active" : ""
-            }`}
-            onClick={() => handleCategoryClick("양식")}
-          >
-            <span className="category-icon">🍝</span>
-            양식
-          </button>
-        </div>
-
-        <div className="search-results">
-          {filteredRestaurants.map((restaurant) => (
-            <div
-              key={restaurant.id}
-              className="restaurant-item"
-              onClick={() => onSelectRestaurant(restaurant)}
+      <div className="search-modal-left">
+        <div className="search-modal-content">
+          {/* 검색 입력 */}
+          <div className="search-input-container">
+            <span className="search-icon">:돋보기:</span>
+            <input
+                type="text"
+                placeholder="식당 이름을 입력하세요"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="search-input"
+            />
+          </div>
+          <div className="location-input-container">
+            <span className="search-icon">:둥근_압핀:</span>
+            <input
+                type="text"
+                placeholder="지역 이름을 입력하세요 (예: 강남, 홍대)"
+                value={locationTerm}
+                onChange={(e) => setLocationTerm(e.target.value)}
+                className="search-input"
+            />
+          </div>
+          {/* 카테고리 버튼 */}
+          <div className="category-buttons">
+            <button
+                className={`category-btn ${selectedCategories.includes("한식") ? "active" : ""}`}
+                onClick={() => handleCategoryClick("한식")}
             >
-              <div className="restaurant-content">
-                <h3 className="restaurant-name">{restaurant.name}</h3>
-                <p className="restaurant-address">{restaurant.address}</p>
-                <div className="restaurant-info">
-                  <span className="rating">⭐ {restaurant.rating}</span>
-                  <span className="review-count">
-                    리뷰 {restaurant.reviewCount}
-                  </span>
-                  <span className="price">평균 {restaurant.price}</span>
-                </div>
-                <div className="restaurant-type">{restaurant.type}</div>
-              </div>
-            </div>
-          ))}
+              <span className="category-icon">:밥:</span>
+              한식
+            </button>
+            <button
+                className={`category-btn ${selectedCategories.includes("중식") ? "active" : ""}`}
+                onClick={() => handleCategoryClick("중식")}
+            >
+              <span className="category-icon">:젓가락:</span>
+              중식
+            </button>
+            <button
+                className={`category-btn ${selectedCategories.includes("양식") ? "active" : ""}`}
+                onClick={() => handleCategoryClick("양식")}
+            >
+              <span className="category-icon">:스파게티:</span>
+              양식
+            </button>
+          </div>
+          <div className="search-button-container">
+            <button className="search-button" onClick={handleSearch}>
+              검색
+            </button>
+          </div>
+          {/* 로딩 상태 */}
+          {loading && <p className="loading-message">검색 중입니다...</p>}
+          {/* 에러 메시지 */}
+          {error && <p className="error-message">{error}</p>}
+          {/* 검색 결과 */}
+          <div className="search-results">
+            {filteredRestaurants.length > 0 ? (
+                filteredRestaurants.map((restaurant) => (
+                    <div
+                        key={restaurant.id}
+                        className="restaurant-item"
+                        onClick={() => onSelectRestaurant(restaurant)}
+                    >
+                      <div className="restaurant-content">
+                        <h3 className="restaurant-name">{restaurant.restaurant_name}</h3>
+                        <p className="restaurant-address">{restaurant.address}</p>
+                        <div className="restaurant-info">
+                          <span className="food-type">:나이프_포크_접시: {restaurant.food_type.join(", ")}</span>
+                          <span className="phone-number">전화번호: {restaurant.phone_number}</span>
+                        </div>
+                      </div>
+                    </div>
+                ))
+            ) : (
+                !loading && <p className="no-results">검색 결과가 없습니다.</p>
+            )}
+          </div>
         </div>
       </div>
-    </div>
   );
 };
-
 export default SearchModal;

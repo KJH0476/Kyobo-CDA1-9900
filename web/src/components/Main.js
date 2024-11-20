@@ -4,6 +4,7 @@ import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 import SearchModal from "./SearchModal";
 import RestaurantDetailPanel from "./RestaurantDetailPanel";
 import "./Main.css";
+import logo from '../img/respa-kawaii-logo4.png';
 
 const Main = () => {
   const [selectedRestaurantDetail, setSelectedRestaurantDetail] = useState(null);
@@ -16,7 +17,6 @@ const Main = () => {
     people: 1,
   });
   const navigate = useNavigate();
-
   // 로그아웃 처리
   const handleLogout = () => {
     localStorage.removeItem("currentUser");
@@ -26,30 +26,25 @@ const Main = () => {
     navigate("/");
     window.location.reload();
   };
-
   const mapContainerStyle = {
     width: "100%",
     height: "calc(100vh - 60px)",
     position: "relative",
     marginTop: "60px",
   };
-
   const center = {
     lat: 37.555946,
     lng: 126.937163,
   };
-
   const mapOptions = {
     zoom: 15,
     disableDefaultUI: false,
     zoomControl: true,
   };
-
   const handleSelectRestaurant = (restaurant) => {
     setSelectedRestaurant(restaurant);
     setSelectedRestaurantDetail(restaurant);
   };
-
   const handleReservation = (e) => {
     e.preventDefault();
     console.log("예약 정보:", {
@@ -60,81 +55,79 @@ const Main = () => {
     setShowReservationModal(false);
     setReservationData({ date: "", time: "", people: 1 });
   };
-
   // 현재 로그인 상태 확인 (세션스토리지 사용)
   const isLoggedIn = localStorage.getItem("currentUser") || false;
-
   return (
-    <div className="main-container">
-      <nav className="nav-bar">
-        <div className="nav-center">
-          <Link to="/" className="logo-link">
-            <h1 className="logo">구구 식당 예약 사이트</h1>
-          </Link>
-        </div>
-        <div className="nav-right">
-          {!isLoggedIn ? (
-            <>
-              <Link to="/login" className="nav-button">
-                로그인
-              </Link>
-              <Link to="/signup" className="nav-button">
-                회원가입
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link to="/mypage" className="nav-button">
-                마이페이지
-              </Link>
-              <button onClick={handleLogout} className="nav-button logout-button">
-                로그아웃
-              </button>
-            </>
-          )}
-        </div>
-      </nav>
-
-      <SearchModal
-        isOpen={isSearchModalOpen}
-        onClose={() => setIsSearchModalOpen(false)}
-        onSelectRestaurant={handleSelectRestaurant}
-      />
-
-      {selectedRestaurantDetail && (
-        <RestaurantDetailPanel
-          restaurant={selectedRestaurantDetail}
-          onClose={() => setSelectedRestaurantDetail(null)}
-        />
-      )}
-
-      <div className="map-container">
-        <LoadScript
-          googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_KEY}
-          libraries={["places"]}
-        >
-          <GoogleMap
-            mapContainerStyle={mapContainerStyle}
-            center={
-              selectedRestaurant
-                ? { lat: selectedRestaurant.lat, lng: selectedRestaurant.lng }
-                : center
-            }
-            options={mapOptions}
-          >
-            {selectedRestaurant && (
-              <Marker
-                position={{
-                  lat: selectedRestaurant.lat,
-                  lng: selectedRestaurant.lng,
-                }}
+      <div className="main-container">
+        <nav className="nav-bar">
+          <div className="nav-center">
+            <Link to="/" className="nav-center">
+              <img
+                  src={logo}
+                  alt="구구 식당 예약 사이트"
+                  className="logo-image"
               />
+            </Link>
+          </div>
+          <div className="nav-right">
+            {!isLoggedIn ? (
+                <>
+                  <Link to="/login" className="nav-button">
+                    로그인
+                  </Link>
+                  <Link to="/signup" className="nav-button">
+                    회원가입
+                  </Link>
+                </>
+            ) : (
+                <>
+                  <Link to="/mypage" className="nav-button">
+                    마이페이지
+                  </Link>
+                  <button onClick={handleLogout} className="nav-button logout-button">
+                    로그아웃
+                  </button>
+                </>
             )}
-          </GoogleMap>
-        </LoadScript>
+          </div>
+        </nav>
+        <SearchModal
+            isOpen={isSearchModalOpen}
+            onClose={() => setIsSearchModalOpen(false)}
+            onSelectRestaurant={handleSelectRestaurant}
+        />
+        {selectedRestaurantDetail && (
+            <RestaurantDetailPanel
+                restaurant={selectedRestaurantDetail}
+                onClose={() => setSelectedRestaurantDetail(null)}
+            />
+        )}
+        <div className="map-container">
+          <LoadScript
+              googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAP_KEY}
+              libraries={["places"]}
+          >
+            <GoogleMap
+                mapContainerStyle={mapContainerStyle}
+                center={
+                  selectedRestaurantDetail
+                      ? { lat: selectedRestaurantDetail.latitude, lng: selectedRestaurantDetail.longitude }
+                      : center
+                }
+                options={mapOptions}
+            >
+              {selectedRestaurantDetail && (
+                  <Marker
+                      position={{
+                        lat: selectedRestaurantDetail.latitude,
+                        lng: selectedRestaurantDetail.longitude,
+                      }}
+                  />
+              )}
+            </GoogleMap>
+          </LoadScript>
+        </div>
       </div>
-    </div>
   );
 };
-
 export default Main;

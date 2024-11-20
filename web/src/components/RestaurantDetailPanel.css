@@ -229,3 +229,10 @@ label {
   font-size: 0.8em;
   color: #666;
 }
+
+.menu-image {
+  width: 150px; /* 원하는 너비 */
+  height: auto; /* 비율 유지 */
+  border-radius: 8px; /* 둥근 모서리 추가 (선택 사항) */
+  margin-bottom: 10px; /* 이미지와 텍스트 간격 조정 */
+}

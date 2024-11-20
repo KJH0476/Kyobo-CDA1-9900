@@ -1,10 +1,12 @@
+import customFetch from "./apiClient";
+
 const BASE_URL = process.env.REACT_APP_BASE_URL;
 
 export const login = async (email, password) => {
   try {
     console.log('로그인 시도:', { email, password }); // 요청 확인
 
-    const response = await fetch(`${BASE_URL}/pass/login`, {
+    const response = await customFetch(`${BASE_URL}/pass/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -14,10 +16,7 @@ export const login = async (email, password) => {
       body: JSON.stringify({ email, password })
     });
 
-    console.log('서버 응답:', response); // 응답 확인
-
     const data = await response.json();
-    console.log('응답 데이터:', data); // 데이터 확인
 
     if (response.ok) {
       return { success: true, data };
@@ -40,7 +39,7 @@ export const login = async (email, password) => {
 
 export const signup = async (email, username, password) => {
   try {
-    const response = await fetch(`${BASE_URL}/pass/signup`, {
+    const response = await customFetch(`${BASE_URL}/pass/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

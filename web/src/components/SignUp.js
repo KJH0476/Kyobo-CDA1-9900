@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./SignUp.css";
 import { useNavigate, Link } from "react-router-dom";
-// import { signup } from "../api/auth"; // API 함수 주석 처리
+import { signup } from "../api/auth"; // API 함수 주석 처리
 
 const SignUp = () => {
   const navigate = useNavigate();
@@ -16,7 +16,7 @@ const SignUp = () => {
   const [successMessage, setSuccessMessage] = useState(""); // 성공 메시지
   const [errorMessage, setErrorMessage] = useState(""); // 실패 메시지
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setErrors({});
     setSuccessMessage("");
@@ -43,53 +43,24 @@ const SignUp = () => {
 
     // API 호출 대신 localStorage에 저장
     try {
-      // 기존 사용자 목록을 가져옴
-      const existingUsers = JSON.parse(localStorage.getItem("users") || "[]");
+      try {
+        const response = await signup(
+            formData.email,
+            formData.username,
+            formData.password
+        );
+        console.log('API 응답:', response);
 
-      // 중복 이메일 확인
-      if (existingUsers.some((user) => user.email === formData.email)) {
-        setErrors({ email: "이미 존재하는 이메일입니다" });
-        return;
+        // 로그인 후 사용자 정보를 로컬 스토리지에 저장
+        //localStorage.setItem("currentUser", JSON.stringify(response.data.userDto));
+
+        setSuccessMessage(response.message || "회원가입이 완료되었습니다!");
+        setTimeout(() => {
+          navigate("/login"); // 회원가입 성공 시 로그인 페이지로 이동
+        }, 2000);
+      } catch (error) {
+        setErrorMessage(error.message || "회원가입 중 오류가 발생했습니다.");
       }
-
-    /* // API 호출     API호출 시 위에 있는 localStorage(임시로 사용함) 내용 삭제
-    try {
-      const response = await signup(
-        formData.email,
-        formData.username,
-        formData.password
-      );
-      console.log('API 응답:', response);
-      
-      // 로그인 후 사용자 정보를 로컬 스토리지에 저장
-      localStorage.setItem("currentUser", JSON.stringify(response.data.userDto));
-      
-      setSuccessMessage(response.message || "회원가입이 완료되었습니다!");
-      setTimeout(() => {
-        navigate("/login"); // 회원가입 성공 시 로그인 페이지로 이동
-      }, 2000);
-    } catch (error) {
-      setErrorMessage(error.message || "회원가입 중 오류가 발생했습니다.");
-    }
-    */
-      
-      // 새로운 사용자 추가
-      const newUser = {
-        email: formData.email,
-        username: formData.username,
-        password: formData.password,
-      };
-
-      // localStorage에 사용자 목록 업데이트
-      localStorage.setItem(
-        "users",
-        JSON.stringify([...existingUsers, newUser])
-      );
-
-      setSuccessMessage("회원가입이 완료되었습니다!");
-      setTimeout(() => {
-        navigate("/login"); // 회원가입 성공 시 로그인 페이지로 이동
-      }, 2000);
     } catch (error) {
       setErrorMessage("회원가입 중 오류가 발생했습니다.");
     }
