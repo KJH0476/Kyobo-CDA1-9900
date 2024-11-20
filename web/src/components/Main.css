@@ -70,3 +70,29 @@
   bottom: 0;
   z-index: 1;
 }
+
+.logo-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 50px; /* 원하는 크기로 줄이기 */
+  height: auto;
+  z-index: 1100; /* 네비게이션 바보다 위에 있도록 설정 */
+}
+
+.logo-container img {
+  width: 100%;
+  height: auto;
+}
+
+.nav-center {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start; /* 왼쪽 정렬 */
+}
+
+.logo-image {
+  width: 100px; /* 로고 크기 조정 */
+  height: auto; /* 가로세로 비율 유지 */
+  margin-right: 10px; /* 로고와 텍스트 사이 여백 */
+}

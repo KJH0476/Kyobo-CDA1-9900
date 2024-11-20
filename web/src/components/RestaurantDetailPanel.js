@@ -302,28 +302,36 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
   );
 
   const RestaurantInfo = () => (
-      <div className="restaurant-info-container">
-        <div className="restaurant-header">
-          <h2>{restaurant.name}</h2>
-          <div className="restaurant-meta">
-            <span>⭐ {restaurant.rating}</span>
-            <span>리뷰 {restaurant.reviewCount}</span>
-            <span>{restaurant.type}</span>
-          </div>
-          <p className="restaurant-address">{restaurant.address}</p>
-        </div>
-        <div className="menu-section">
-          <h3>메뉴</h3>
-          <div className="menu-list">
-            {restaurantMenus.map((menu, index) => (
-                <div key={index} className="menu-item">
-                  <div className="menu-info">
-                    <h4>{menu.name}</h4>
-                    <p className="menu-description">{menu.description}</p>
-                  </div>
-                  <div className="menu-price">{menu.price}</div>
-                </div>
-            ))}
+    <div className="restaurant-info-container">
+      {/* 식당 기본 정보 */}
+      <div className="restaurant-header">
+        <h2>{restaurant.restaurant_name}</h2>
+        <p className="restaurant-address">주소: {restaurant.address}</p>
+        <p className="restaurant-phone">전화번호: {restaurant.phone_number}</p>
+        <p className="restaurant-type">
+          종류: {restaurant.food_type?.join(", ")}
+        </p>
+      </div>
+
+      {/* 메뉴 섹션 */}
+      <div className="menu-section">
+        <h3>메뉴</h3>
+        <div className="menu-list">
+          {restaurant.menu.map((menu, index) => (
+            <div key={index} className="menu-item">
+              <div className="menu-info">
+                <h4>{menu.menu_name}</h4>
+                <p className="menu-price">{menu.menu_price}원</p>
+              </div>
+              {menu.image_url && (
+                <img
+                  src={menu.image_url}
+                  alt={menu.menu_name}
+                  className="menu-image"
+                />
+              )}
+            </div>
+          ))}
           </div>
         </div>
         <button

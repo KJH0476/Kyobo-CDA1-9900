@@ -80,3 +80,18 @@ h2 {
   color: #333;
   margin-bottom: 20px;
 }
+
+.logo-container {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  width: 50px; /* 원하는 크기로 줄이기 */
+  height: auto;
+  z-index: 1100; /* 네비게이션 바보다 위에 있도록 설정 */
+}
+
+.logo-container img {
+  width: 100%;
+  height: auto;
+}
+

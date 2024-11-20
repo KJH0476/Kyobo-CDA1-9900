@@ -60,7 +60,7 @@ const SearchModal = ({ isOpen, onClose, onSelectRestaurant, userEmail }) => {
         <div className="search-modal-content">
           {/* 검색 입력 */}
           <div className="search-input-container">
-            <span className="search-icon">:돋보기:</span>
+            <span className="search-icon">🔍</span>
             <input
                 type="text"
                 placeholder="식당 이름을 입력하세요"
@@ -70,7 +70,7 @@ const SearchModal = ({ isOpen, onClose, onSelectRestaurant, userEmail }) => {
             />
           </div>
           <div className="location-input-container">
-            <span className="search-icon">:둥근_압핀:</span>
+            <span className="search-icon">🔍</span>
             <input
                 type="text"
                 placeholder="지역 이름을 입력하세요 (예: 강남, 홍대)"
@@ -85,21 +85,21 @@ const SearchModal = ({ isOpen, onClose, onSelectRestaurant, userEmail }) => {
                 className={`category-btn ${selectedCategories.includes("한식") ? "active" : ""}`}
                 onClick={() => handleCategoryClick("한식")}
             >
-              <span className="category-icon">:밥:</span>
+              <span className="category-icon">🍚</span>
               한식
             </button>
             <button
                 className={`category-btn ${selectedCategories.includes("중식") ? "active" : ""}`}
                 onClick={() => handleCategoryClick("중식")}
             >
-              <span className="category-icon">:젓가락:</span>
+              <span className="category-icon">🥢</span>
               중식
             </button>
             <button
                 className={`category-btn ${selectedCategories.includes("양식") ? "active" : ""}`}
                 onClick={() => handleCategoryClick("양식")}
             >
-              <span className="category-icon">:스파게티:</span>
+              <span className="category-icon">🍝</span>
               양식
             </button>
           </div>
@@ -125,7 +125,7 @@ const SearchModal = ({ isOpen, onClose, onSelectRestaurant, userEmail }) => {
                         <h3 className="restaurant-name">{restaurant.restaurant_name}</h3>
                         <p className="restaurant-address">{restaurant.address}</p>
                         <div className="restaurant-info">
-                          <span className="food-type">:나이프_포크_접시: {restaurant.food_type.join(", ")}</span>
+                          <span className="food-type">{restaurant.food_type.join(", ")}</span>
                           <span className="phone-number">전화번호: {restaurant.phone_number}</span>
                         </div>
                       </div>
