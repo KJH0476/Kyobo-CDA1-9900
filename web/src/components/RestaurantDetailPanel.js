@@ -12,6 +12,7 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [fetchError, setFetchError] = useState("");
 
+  /*
   const menus = {
     "Sample Restaurant": [
       {
@@ -21,9 +22,9 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
       },
       // 추가 메뉴...
     ],
-  };
+  }; */
 
-  const restaurantMenus = menus[restaurant.name] || [];
+ // const restaurantMenus = menus[restaurant.name] || [];
 
   // 예약 가능한 시간대를 서버에서 가져오는 useEffect
   useEffect(() => {
