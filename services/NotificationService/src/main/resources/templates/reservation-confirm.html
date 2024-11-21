@@ -3,13 +3,69 @@
 <head>
     <title>예약 확정</title>
     <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .email-header {
+            background-color: #007bff;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-content {
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .email-content p {
+            margin: 10px 0;
+        }
+        .email-footer {
+            background-color: #f8f9fa;
+            color: #888;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
-    <p>안녕하세요, <span th:text="${email}">고객님</span>님!</p>
-    <p><span th:text="${restaurantName}">레스토랑 이름</span>에서의 예약이 확정되었습니다.</p>
-    <p>예약 번호: <span th:text="${reservationId}">UUID</span></p>
-    <p>예약 일시: <span th:text="${reservationDateTime}">2024-01-01 12:00</span></p>
-    <p>예약 인원: <span th:text="${numberOfGuests + ' 명'}">2명</span></p>
-    <p>감사합니다!</p>
+<div class="email-container">
+    <div class="email-header">
+        <h1>예약 확정 알림</h1>
+    </div>
+    <div class="email-content">
+        <p>안녕하세요, <span class="highlight" th:text="${email}">고객님</span>님!</p>
+        <p><span class="highlight" th:text="${restaurantName}">레스토랑 이름</span>에서의 예약이 확정되었습니다.</p>
+        <p>예약 번호: <span class="highlight" th:text="${reservationId}">UUID</span></p>
+        <p>예약 일시: <span class="highlight" th:text="${reservationDateTime}">2024-01-01 12:00</span></p>
+        <p>예약 인원: <span class="highlight" th:text="${numberOfGuests + ' 명'}">2명</span></p>
+        <p>감사합니다!</p>
+    </div>
+    <div class="email-footer">
+        <p>이 이메일은 고객님께서 저희 예약 서비스를 통해 예약을 완료하셨기 때문에 발송되었습니다.</p>
+        <p>추가 문의 사항이 있으시면 언제든지 저희에게 연락 주세요!</p>
+    </div>
+</div>
 </body>
 </html>

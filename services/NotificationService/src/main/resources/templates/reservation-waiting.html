@@ -3,12 +3,67 @@
 <head>
     <title>대기 예약 자리 발생 안내</title>
     <meta charset="UTF-8">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        .email-container {
+            max-width: 600px;
+            margin: 20px auto;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            overflow: hidden;
+        }
+        .email-header {
+            background-color: #28a745;
+            color: #ffffff;
+            padding: 15px;
+            text-align: center;
+        }
+        .email-header h1 {
+            margin: 0;
+            font-size: 24px;
+        }
+        .email-content {
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .email-content p {
+            margin: 10px 0;
+        }
+        .email-footer {
+            background-color: #f8f9fa;
+            color: #888;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
-    <p>안녕하세요, <span th:text="${email}">고객님</span>님!</p>
-    <p><span th:text="${restaurantName}">레스토랑 이름</span>에서 자리가 발생하여 안내드립니다.</p>
-    <p>예약 가능 일자: <span th:text="${reservationDateTime}">2024-01-01 12:00</span></p>
-    <p>현재 자리가 발생했으니 예약을 원하시면 빠르게 확인해주시기 바랍니다.</p>
-    <p>감사합니다!</p>
+<div class="email-container">
+    <div class="email-header">
+        <h1>대기 예약 자리 발생 안내</h1>
+    </div>
+    <div class="email-content">
+        <p>안녕하세요, <span class="highlight" th:text="${email}">고객님</span>님!</p>
+        <p><span class="highlight" th:text="${restaurantName}">레스토랑</span>에서 자리가 발생하여 안내드립니다.</p>
+        <p>예약 가능 일자: <span class="highlight" th:text="${reservationDateTime}">2024-01-01 12:00</span></p>
+        <p>현재 자리가 발생했으니 예약을 원하시면 빠르게 확인해주시기 바랍니다.</p>
+        <p>감사합니다!</p>
+    </div>
+    <div class="email-footer">
+        <p>보다 나은 서비스를 위해 항상 노력하겠습니다. 문의 사항이 있으시면 언제든지 연락 주세요.</p>
+    </div>
+</div>
 </body>
 </html>
