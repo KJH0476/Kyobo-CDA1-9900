@@ -16,6 +16,7 @@ public class ReservationDto {
 
     private UUID reservationId;
     private UUID restaurantId;
+    private String restaurantName;
     private String userEmail;
     private LocalDateTime reservationDateTime;
     private int numberOfGuests;

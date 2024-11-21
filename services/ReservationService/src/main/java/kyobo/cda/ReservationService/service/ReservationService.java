@@ -60,6 +60,7 @@ public class ReservationService {
         Reservation reservation = Reservation.builder()
                 .restaurantId(request.getRestaurantId())
                 .userEmail(request.getUserEmail())
+                .restaurantName(availability.getRestaurantName())
                 .availability(availability)
                 .reservationDateTime(LocalDateTime.of(request.getReservationDate(), request.getReservationTime()))
                 .numberOfGuests(request.getNumberOfGuests())
@@ -67,12 +68,13 @@ public class ReservationService {
 
         reservationRepository.save(reservation);
 
-        ResponseEntity<String> response = sendNotification(reservation, availability, "/notification/confirm");
+        ResponseEntity<String> response = sendNotification(reservation, "/notification/confirm");
         log.info("Notification 서버로 예약 생성 요청 완료, 응답: {}", response.getBody());
 
         return ReservationDto.builder()
                 .reservationId(reservation.getId())
                 .restaurantId(reservation.getRestaurantId())
+                .restaurantName(reservation.getRestaurantName())
                 .userEmail(reservation.getUserEmail())
                 .reservationDateTime(reservation.getReservationDateTime())
                 .numberOfGuests(reservation.getNumberOfGuests())
@@ -97,7 +99,7 @@ public class ReservationService {
         reservationRepository.deleteById(reservationId);
         log.info("예약이 삭제되었습니다. 예약 ID: {}", reservationId);
 
-        ResponseEntity<String> response = sendNotification(reservation, availability, "/notification/cancel");
+        ResponseEntity<String> response = sendNotification(reservation, "/notification/cancel");
         log.info("Notification 서버로 예약 취소 요청 완료, 응답: {}", response.getBody());
 
         // 해당 예약 시간의 대기 목록 조회
@@ -140,6 +142,7 @@ public class ReservationService {
                             .reservationId(reservation.getId())
                             .restaurantId(reservation.getRestaurantId())
                             .userEmail(reservation.getUserEmail())
+                            .restaurantName(reservation.getRestaurantName())
                             .reservationDateTime(reservation.getReservationDateTime())
                             .numberOfGuests(reservation.getNumberOfGuests())
                             .build();
@@ -201,14 +204,14 @@ public class ReservationService {
         }
     }
 
-    private ResponseEntity<String> sendNotification(Reservation reservation, RestaurantAvailability availability, String path) {
+    private ResponseEntity<String> sendNotification(Reservation reservation, String path) {
         // 예약 생성 시 Notification 서버로 예약 정보 전송
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
         HttpEntity<ReservationNotiDto> entity = new HttpEntity<>(ReservationNotiDto.builder()
                 .reservationId(reservation.getId())
-                .restaurantName(availability.getRestaurantName())
+                .restaurantName(reservation.getRestaurantName())
                 .userEmail(reservation.getUserEmail())
                 .reservationDateTime(reservation.getReservationDateTime())
                 .numberOfGuests(reservation.getNumberOfGuests())

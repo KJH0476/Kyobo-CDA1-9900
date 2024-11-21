@@ -29,6 +29,9 @@ public class Reservation {
     @Column(name = "user_email", length = 100, nullable = false)
     private String userEmail;
 
+    @Column(name = "restaurant_name", length = 100, nullable = false)
+    private String restaurantName;
+
     @ManyToOne
     @JoinColumn(name = "availability_id", nullable = false)
     private RestaurantAvailability availability;
