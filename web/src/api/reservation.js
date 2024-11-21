@@ -29,7 +29,6 @@ export const fetchReservations = async (email, jwtToken) => {
 };
 
 // 예약 취소 API 호출 함수
-
 export const cancelReservation = async (reservationId, jwtToken) => {
   try {
     const response = await customFetch(`${BASE_URL}/reservation/cancel/${reservationId}`, {

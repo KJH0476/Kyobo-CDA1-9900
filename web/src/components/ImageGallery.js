@@ -3,6 +3,7 @@ import React from 'react';
 /*
 // S3 이미지 경로 설정
 const S3_BASE_URL = 'https://respa.click.s3.amazonaws.com/test1/build/static/media/images/';
+/*
 const IMAGE_NAMES = [
     'Assorted_Bossam.6b1ea7f0c1246248bda9.jpg',
     'Baggate_image.94920fe1d3060917d0cd.jpg',
@@ -68,7 +69,10 @@ const IMAGE_NAMES = [
     
     // 추가 이미지 이름을 여기에 추가
 ];
+*/
 
+
+/*
 const images = IMAGE_NAMES.map((name) => ({
     src: `${S3_BASE_URL}${name}`,
     alt: name.split('.')[0].replace(/_/g, ' '),
