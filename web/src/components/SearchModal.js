@@ -8,7 +8,7 @@ const SearchModal = ({ isOpen, onClose, onSelectRestaurant, userEmail }) => {
   const [filteredRestaurants, setFilteredRestaurants] = useState([]); // 검색 결과
   const [loading, setLoading] = useState(false); // 로딩 상태
   const [error, setError] = useState(null); // 에러 상태
-  const [page, setPage] = useState(1); // 현재 페이지
+  //const [page, setPage] = useState(1); // 현재 페이지
   const [hasMore, setHasMore] = useState(true); // 더 불러올 데이터 여부
 
   const BASE_URL = process.env.REACT_APP_BASE_URL;
@@ -23,7 +23,6 @@ const SearchModal = ({ isOpen, onClose, onSelectRestaurant, userEmail }) => {
         address: locationTerm || "",
         food_type: selectedCategories.length > 0 ? selectedCategories.join(",") : "",
         limit: 10, // 한 번에 불러올 데이터 개수
-        offset: (page - 1) * 10, // 페이지 번호에 따른 offset
       }).toString();
       const response = await fetch(`${BASE_URL}/search/restaurants?${queryParams}`, {
         method: "GET",
@@ -36,11 +35,13 @@ const SearchModal = ({ isOpen, onClose, onSelectRestaurant, userEmail }) => {
         throw new Error("검색에 실패했습니다.");
       }
       const data = await response.json();
+
+      console.log(data);
       if (data.statusCode === 200) {
         if (data.restaurants.length < 10) {
           setHasMore(false); // 더 이상 불러올 데이터가 없으면 false 설정
         }
-        setFilteredRestaurants((prev) => [...prev, ...data.restaurants]); // 이전 결과에 새로운 데이터 추가
+        setFilteredRestaurants(data.restaurants); // 기존 결과를 새로운 결과로 대체
       } else {
         setError(data.message || "검색에 실패했습니다.");
       }
@@ -50,12 +51,6 @@ const SearchModal = ({ isOpen, onClose, onSelectRestaurant, userEmail }) => {
     } finally {
       setLoading(false);
     }
-  };
-
-  // "더 보기" 버튼 클릭
-  const handleLoadMore = () => {
-    setPage((prev) => prev + 1); // 페이지 번호 증가
-    handleSearch(); // 데이터 요청
   };
 
   // 카테고리 버튼 클릭 시 선택/해제
@@ -147,7 +142,7 @@ const SearchModal = ({ isOpen, onClose, onSelectRestaurant, userEmail }) => {
                 </div>
               ))}
               {hasMore && (
-                <button className="load-more-button" onClick={handleLoadMore}>
+                <button className="load-more-button">
                   더 보기
                 </button>
               )}
