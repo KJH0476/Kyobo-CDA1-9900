@@ -78,6 +78,8 @@ const images = IMAGE_NAMES.map((name) => ({
     alt: name.split('.')[0].replace(/_/g, ' '),
 }));
 */
+
+
 // src/img 폴더 내 모든 이미지 동적으로 가져오기
 const importAll = (requireContext) =>
     requireContext.keys().map((key) => ({

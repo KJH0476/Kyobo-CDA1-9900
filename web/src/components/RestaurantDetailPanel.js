@@ -13,6 +13,9 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
   const [fetchError, setFetchError] = useState("");
 
 
+  const imageBaseUrl = process.env.REACT_APP_IMAGE_BASE_URL;
+  
+
   // 예약 가능한 시간대를 서버에서 가져오는 useEffect
   useEffect(() => {
     const fetchAvailability = async () => {
@@ -222,7 +225,7 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
                   {slot.reservationTime}
                   {slot.isReserved && <span className="reserved-label">예약됨</span>}
                   {slot.availableTables === 0 && !slot.isReserved && (
-                    <span className="booked-label">예약 마감</span>
+                    <span className="booked-label"></span>
                   )}
                 </button>
               ))
@@ -309,11 +312,13 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
                 <h4>{menu.menu_name}</h4>
                 <p className="menu-price">{menu.menu_price}원</p>
               </div>
-              {menu.image_url && (
+              
+              {menu.image_url && (  
                 <img
-                  src={menu.image_url}
-                  alt={menu.menu_name}
-                  className="menu-image"
+                 // src={`${imageBaseUrl}/${menu.image_url}`}
+                 src={`${imageBaseUrl}/${menu.image_url}`}
+                 alt={menu.menu_name}
+                 className="menu-image"
                 />
               )}
             </div>
