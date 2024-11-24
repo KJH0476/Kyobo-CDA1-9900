@@ -2,19 +2,20 @@ import React, { useState, useEffect } from "react";
 import "./RestaurantDetailPanel.css";
 import { createReservation, registerWaitlist, getAvailabilityTimeSlots } from "../api/reservation";
 
+// RestaurantDetailPanel 컴포넌트
 const RestaurantDetailPanel = ({ restaurant, onClose }) => {
-  const [showReservation, setShowReservation] = useState(false);
-  const [selectedDate, setSelectedDate] = useState("");
-  const [selectedTime, setSelectedTime] = useState("");
-  const [peopleCount, setPeopleCount] = useState(1);
-  const [availabilityTimeList, setAvailabilityTimeList] = useState([]);
-  const [isWaitlist, setIsWaitlist] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [fetchError, setFetchError] = useState("");
+  // 상태 관리
+  const [showReservation, setShowReservation] = useState(false); // 예약 폼 표시 여부
+  const [selectedDate, setSelectedDate] = useState(""); // 선택한 날짜
+  const [selectedTime, setSelectedTime] = useState(""); // 선택한 시간
+  const [peopleCount, setPeopleCount] = useState(1); // 예약 인원 수
+  const [availabilityTimeList, setAvailabilityTimeList] = useState([]); // 예약 가능 시간대 리스트
+  const [isWaitlist, setIsWaitlist] = useState(false); // 대기 등록 여부
+  const [isLoading, setIsLoading] = useState(false); // 로딩 상태
+  const [fetchError, setFetchError] = useState(""); // 에러 메시지
 
 
-  const imageBaseUrl = process.env.REACT_APP_IMAGE_BASE_URL;
-  
+  const imageBaseUrl = process.env.REACT_APP_IMAGE_BASE_URL; // 메뉴 이미지의 기본 경로
 
   // 예약 가능한 시간대를 서버에서 가져오는 useEffect
   useEffect(() => {
@@ -24,18 +25,18 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
         return;
       }
   
-      const jwtToken = localStorage.getItem("accessToken");
-      const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+      const jwtToken = localStorage.getItem("accessToken"); // JWT 토큰
+      const currentUser = JSON.parse(localStorage.getItem("currentUser")); // 현재 사용자 정
   
       if (!currentUser) {
-        setFetchError("로그인이 필요한 서비스입니다.");
+        setFetchError("로그인이 필요한 서비스입니다."); // 로그인 필요 메시지
         return;
       }
   
       try {
-        setIsLoading(true);
-        setFetchError("");
-  
+        setIsLoading(true); // 로딩 시작
+        setFetchError(""); // 에러 초기화 
+        // API 호출
         const response = await getAvailabilityTimeSlots(
           restaurant.id,
           jwtToken,
@@ -44,25 +45,26 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
         );
   
         if (response.statusCode === 200) {
+          // 날짜에 맞는 시간대 필터링
           const filteredAvailability = response.availabilityTimeList.filter(
             (slot) => new Date(slot.reservationDate).toISOString().split("T")[0] === selectedDate
           );
-  
+          // 시간대를 보기 좋게 포맷팅
           const formattedAvailability = filteredAvailability.map(slot => ({
             ...slot,
-            reservationTime: slot.reservationTime.slice(0, 5)
+            reservationTime: slot.reservationTime.slice(0, 5)  // HH:MM:SS -> HH:MM
           }));
   
-          setAvailabilityTimeList(formattedAvailability);
+          setAvailabilityTimeList(formattedAvailability);// 시간대 리스트 상태 업데이트
         } else {
-          setAvailabilityTimeList([]);
-          setFetchError("예약 가능 시간대 조회에 실패했습니다.");
+          setAvailabilityTimeList([]); // 시간대 초기화
+          setFetchError("예약 가능 시간대 조회에 실패했습니다."); // 에러 메시지 설정
         }
       } catch (error) {
-        console.error("예약 가능 시간대 조회 실패:", error);
-        setFetchError("예약 가능 시간대 조회에 실패했습니다.");
+        console.error("예약 가능 시간대 조회 실패:", error); // 에러 로그 출력
+        setFetchError("예약 가능 시간대 조회에 실패했습니다."); // 에러 메시지 설정
       } finally {
-        setIsLoading(false);
+        setIsLoading(false); // 로딩 종료
       }
     };
   
@@ -170,12 +172,12 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
     }
   };
 
-  // 예약DateTime을 보기 좋게 포맷팅하는 함수
+  // 날짜 및 시간을 보기 좋게 포맷팅하는 함수
   const formatDateTime = (dateTimeStr) => {
     const date = new Date(dateTimeStr);
     if (isNaN(date)) return "잘못된 날짜";
 
-    // Format to "YYYY-MM-DD HH:MM" in Korean locale
+     // 한국 로케일로 "YYYY-MM-DD HH:MM" 형식으로 포맷팅
     const options = {
       year: 'numeric',
       month: '2-digit',
