@@ -7,8 +7,6 @@
 * 사용자 중심 서비스 제공: 사용자에게 편리한 식당 검색 및 예약 서비스를 제공합니다.
 
 ## 🎯 기술 스택 
-<h2 align="center">📚 기술 스택 📚</h2>
-<p align="center">
   <b>프론트엔드</b> &nbsp;
   <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=white"/>&nbsp;
   <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=JavaScript&logoColor=black"/>&nbsp;
