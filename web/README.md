@@ -1,70 +1,41 @@
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
-
-## Available Scripts
-
-In the project directory, you can run:
-
-### `npm start`
-
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
-
-### `npm test`
-
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# 기능 상세 설명
+---
+1. 메인페이지 실행 (Main.js)
+  * 지도(구글api)
+  * 검색 블록
+  * 한식,양식,중식 카테고리
+  * 검색 버튼
+  * 로그인,회원가입 버튼
+2. 로그인 페이지 실행 (SimpleLogin.js)
+   * 이메일 입력
+   * 비밀번호 입력
+   * 로그인 버튼
+   * 회원가입 버튼
+4. 회원가입 페이지 실행(SignUp.js)
+   * 이메일 입력
+   * 사용자명 입력
+   * 비밀번호 입력
+   * 비밀번호 입력 확인
+   * 회원가입
+5. 검색 모달 페이지(SearchModal.js)
+   * 식당 이름 검색어
+   * 지역 검색어
+   * 선택된 카테고리
+   * 검색결과
+   * 로딩 상태
+   * 에러 상태
+6. 예약 상세 페이지(RestaurantDetailPanel.js)
+   * 예약 폼 표시 여부
+   * 선택한 날짜, 시간, 인원 수
+   * 예약 가능한 시간대 리스트
+   * 대기 리스트 여부
+   * 로딩 상태
+   * 에러 메세지
+7. 마이페이지 페이지(Mypage.js)
+   * 페이지 이동 훅
+   * 사용자 정보 상태
+   * 예약 목록 상태
+   * 에러 메시지 상태
+   * 로딩 상태
+8. ImageGallery.js
+   * 사용할 이미지 동적 업로드
