@@ -97,7 +97,7 @@
 
 
 
-### 배포
+### 배포 및 CDN
 - <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=flat-square&logo=Amazon%20S3&logoColor=white" alt="Amazon S3">
 - <img src="https://img.shields.io/badge/CloudFront-527FFF?style=flat-square&logo=Amazon%20CloudFront&logoColor=white" alt="CloudFront">
 
