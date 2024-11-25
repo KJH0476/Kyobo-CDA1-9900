@@ -21,12 +21,12 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
   useEffect(() => {
     const fetchAvailability = async () => {
       if (!selectedDate) {
-        setAvailabilityTimeList([]);
+        setAvailabilityTimeList([]); // 날짜가 선택되지 않았으면 리스트를 빈 배열로 설정
         return;
       }
   
-      const jwtToken = localStorage.getItem("accessToken"); // JWT 토큰
-      const currentUser = JSON.parse(localStorage.getItem("currentUser")); // 현재 사용자 정
+      const jwtToken = localStorage.getItem("accessToken"); // JWT 토큰 가져오기
+      const currentUser = JSON.parse(localStorage.getItem("currentUser")); // 현재 사용자 정보 가져오기
   
       if (!currentUser) {
         setFetchError("로그인이 필요한 서비스입니다."); // 로그인 필요 메시지
@@ -34,9 +34,9 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
       }
   
       try {
-        setIsLoading(true); // 로딩 시작
-        setFetchError(""); // 에러 초기화 
-        // API 호출
+        setIsLoading(true); // 로딩 시작 시작
+        setFetchError(""); // 에러 메시지 초기화 
+        // API 호출하여 예약 가능한 시간대 가져오기 
         const response = await getAvailabilityTimeSlots(
           restaurant.id,
           jwtToken,
@@ -72,23 +72,25 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
   }, [selectedDate, restaurant.id]);
   
 
+  // 인원 수 변경 함수
   const handlePeopleChange = (increment) => {
     const newCount = peopleCount + increment;
     if (newCount >= 1 && newCount <= 10) {
-      setPeopleCount(newCount);
+      setPeopleCount(newCount); // 인원 수 업데이트
     }
   };
 
+  // 예약 제출 처리 함수
   const handleSubmitReservation = async () => {
     if (!selectedDate || !selectedTime) {
-      alert("날짜와 시간을 선택해주세요.");
+      alert("날짜와 시간을 선택해주세요."); // 날짜와 시간이 선택되지 않았을 경우 알림
       return;
     }
 
-    const jwtToken = localStorage.getItem("accessToken");
-    const currentUser = JSON.parse(localStorage.getItem("currentUser"));
+    const jwtToken = localStorage.getItem("accessToken"); // JWT 토큰 가져오기
+    const currentUser = JSON.parse(localStorage.getItem("currentUser")); // 현재 사용자 정보 가져오기
     if (!currentUser) {
-      alert("로그인이 필요한 서비스입니다.");
+      alert("로그인이 필요한 서비스입니다."); // 로그인 필요 알림
       return;
     }
 
@@ -102,10 +104,10 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
     };
 
     try {
-      setIsLoading(true);
+      setIsLoading(true); // 로딩 상태 시작 
 
       // 예약 가능 시간대 다시 조회 (최신 상태 확인)
-      const availabilityResponse = await getAvailabilityTimeSlots(
+      const availabilityResponse = await ge  tAvailabilityTimeSlots(
           restaurant.id,
           jwtToken,
           currentUser.email,
@@ -124,12 +126,13 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           reservationTime: slot.reservationTime.slice(0, 5)
         }));
 
+        // 선택된 시간대 찾기
         const selectedTimeSlot = availableTimes.find(
             (slot) => slot.reservationTime === selectedTime
         );
 
         if (selectedTimeSlot && selectedTimeSlot.availableTables > 0) {
-          // 예약 가능
+          // 예약 가능한 경우
           const response = await createReservation(reservationData, jwtToken);
 
           if (response.statusCode === 201) {
@@ -138,9 +141,9 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
                 `예약이 완료되었습니다!\n예약 ID: ${reservationDetails.reservationId}\n식당: ${reservationDetails.restaurantName}\n날짜 및 시간: ${formatDateTime(reservationDetails.reservationDateTime)}\n인원: ${reservationDetails.numberOfGuests}`
             );
           } else if (response.status === 400) {
-            alert(response.message);
+            alert(response.message); // 에러 메시지 출력 
           } else {
-            alert("예약 생성에 실패했습니다.");
+            alert("예약 생성에 실패했습니다."); // 예약 생성 실패 알림
           }
         } else {
           // 예약 불가능, 대기 리스트 등록
@@ -156,19 +159,19 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
                 `예약 날짜 및 시간: ${formatDateTime(waitListDetails.reservationDateTime)}`
             );
           } else {
-            alert("예약 대기 등록에 실패했습니다.");
+            alert("예약 대기 등록에 실패했습니다.");  // 대기 등록 실패 알림
           }
         }
       } else {
-        alert("예약 가능 시간대 조회에 실패했습니다.");
+        alert("예약 가능 시간대 조회에 실패했습니다."); // 시간대 조회 실패 알림
       }
 
       onClose(); // 예약 완료 후 화면 닫기
     } catch (error) {
-      console.error("예약 생성 실패:", error);
-      alert("이미 해당 시간에 예약이 존재합니다.");
+      console.error("예약 생성 실패:", error); // 에러 로그 출력
+      alert("이미 해당 시간에 예약이 존재합니다."); // 예약 중복 알림
     } finally {
-      setIsLoading(false);
+      setIsLoading(false); // 로딩 상태 종료
     }
   };
 
@@ -179,16 +182,17 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
 
      // 한국 로케일로 "YYYY-MM-DD HH:MM" 형식으로 포맷팅
     const options = {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit',
-      hour12: false,
+      year: 'numeric', // 연도 4자리
+      month: '2-digit', // 월 2자리
+      day: '2-digit', // 일 2자리
+      hour: '2-digit', // 시간 2자리
+      minute: '2-digit', // 분 2자리
+      hour12: false, // 24시간 형식
     };
     return new Intl.DateTimeFormat('ko-KR', options).format(date).replace(',', '');
   };
 
+  // 예약 폼 컴포넌트
   const ReservationForm = () => (
     <div className="reservation-form">
       <h3>예약하기</h3>
@@ -200,14 +204,17 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           value={selectedDate}
           onChange={(e) => {
             setSelectedDate(e.target.value);
-            setSelectedTime("");
-            setIsWaitlist(false);
+            setSelectedTime(""); // 날짜 변경 시 시간 초기화
+            setIsWaitlist(false); // 대기 등록 여부 초기화
           }}
-          min={new Date().toISOString().split("T")[0]}
+          min={new Date().toISOString().split("T")[0]} // 오늘 날짜부터 선택 가능
         />
       </div>
+      {/* 로딩 중일 때 메시지 표시 */}
       {isLoading && <div className="loading">예약 가능 시간대 조회 중...</div>}
+      {/* 에러 메시지 표시 */}
       {fetchError && <div className="error-message">{fetchError}</div>}
+      {/* 시간 선택 */}
       {selectedDate && !isLoading && !fetchError && (
         <div className="time-selection">
           <label>시간 선택</label>
@@ -220,8 +227,8 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
                       ${slot.isReserved ? "reserved" : ""}
                       ${slot.availableTables === 0 ? "booked" : ""}`}
                   onClick={() => {
-                    setSelectedTime(slot.reservationTime);
-                    setIsWaitlist(slot.isReserved || slot.availableTables === 0);
+                    setSelectedTime(slot.reservationTime); // 선택한 시간 업데이트
+                    setIsWaitlist(slot.isReserved || slot.availableTables === 0); // 대기 등록 여부 설정
                   }}
                 >
                   {slot.reservationTime}
@@ -239,13 +246,14 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           </div>
         </div>
       )}
+      {/* 인원 선택 */}
       <div className="people-selection">
         <label>인원 선택</label>
         <div className="people-counter">
           <button
             className="counter-btn"
             onClick={() => handlePeopleChange(-1)}
-            disabled={peopleCount <= 1}
+            disabled={peopleCount <= 1} // 최소 인원 제한
           >
             -
           </button>
@@ -253,12 +261,13 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           <button
             className="counter-btn"
             onClick={() => handlePeopleChange(1)}
-            disabled={peopleCount >= 10}
+            disabled={peopleCount >= 10} // 최대 인원 제한
           >
             +
           </button>
         </div>
       </div>
+       {/* 예약 정보 요약 */}
       {(selectedDate || selectedTime || peopleCount > 1) && (
         <div className="reservation-summary">
           <h4>예약 정보</h4>
@@ -281,6 +290,7 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           </div>
         </div>
       )}
+      {/* 예약 제출 버튼 */}
       <button
         className={`submit-reservation ${!selectedDate || !selectedTime ? "disabled" : ""} 
               ${isWaitlist ? "waitlist-button" : ""}`}
@@ -292,6 +302,7 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
     </div>
   );
 
+  // 레스토랑 정보 컴포넌트
   const RestaurantInfo = () => (
     <div className="restaurant-info-container">
       {/* 식당 기본 정보 */}
@@ -327,20 +338,22 @@ const RestaurantDetailPanel = ({ restaurant, onClose }) => {
           ))}
           </div>
         </div>
+        {/* 예약하기 버튼 */}
         <button
             className="reservation-button"
-            onClick={() => setShowReservation(true)}
+            onClick={() => setShowReservation(true)} // 예약 폼 표시 상태로 변경
         >
           예약하기
         </button>
       </div>
   );
-
+  // 메인 렌더링 부분
   return (
       <div className="detail-panel">
         <button className="close-button" onClick={onClose}>
           &times;
         </button>
+        {/* 예약 폼 또는 레스토랑 정보 표시 */}
         {showReservation ? <ReservationForm /> : <RestaurantInfo />}
       </div>
   );
