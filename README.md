@@ -21,6 +21,21 @@
 - <img src="https://img.shields.io/badge/RESTful%20API-000000?style=flat-square&logo=RESTful-API&logoColor=white"/>
 
 ### 인프라
+- <img src="https://img.shields.io/badge/AWS%20ECS-FF9900?style=flat-square&logo=Amazon%20ECS&logoColor=white" alt="ECS">
+     
+
+
+### DataBase
+
+
+
+### 배포
+
+
+
+### 목업 및 UI/UX 기획
+
+
 
 
 ## 🎯 주요 기능
