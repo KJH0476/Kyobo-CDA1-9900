@@ -1,6 +1,8 @@
 # Kyobo-CDA1-9900
 ## 🎯 프로젝트 개요
 교보 DTS CDA 1기 과정에서 진행한 **AWS를 활용한 식당 예약 플랫폼 인프라 구축** 프로젝트입니다.
+* 이 프로젝트는 특정 시즌의 트래픽 폭증과 시스템 안정성 문제를 해결하고자 시작되었습니다.
+* 사용자에게 쉽고 직관적인 예약 경험을 제공하며, 글로벌 확장을 고려한 안정적인 시스템 설계가 목표입니다.
 
 ## 🎯 프로젝트 목표
 ### AWS 기반 안정적인 예약 시스템 구축
@@ -53,42 +55,64 @@
 - <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=JavaScript&logoColor=yellow"/>
 - <img src="https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=HTML5&logoColor=white"/>
 - <img src="https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=CSS3&logoColor=white"/> 
-
+---
 ### 백엔드
 - <img src="https://img.shields.io/badge/Java-007396?style=flat-square&logo=Java&logoColor=white"/> 
 - <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat-square&logo=Spring%20Boot&logoColor=white"/>
 - <img src="https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=Python&logoColor=white" alt="Python">
-
+---
 ### 인프라
-- <img src="https://img.shields.io/badge/AWS%20ECS-FF9900?style=flat-square&logo=Amazon%20ECS&logoColor=white" alt="ECS"/>
-- <img src="https://img.shields.io/badge/AWS%20ELB-FF9900?style=flat-square&logo=Elastic-Load-Balancer&logoColor=white" alt="ELB">
+- <img src="https://img.shields.io/badge/AWS%20ECS-FF9900?style=flat-square&logo=Amazon%20ECS&logoColor=white" alt="ECS">
+- <img src="https://img.shields.io/badge/AWS%20ELB-FF9900?style=flat-square&logo=Amazon%20AWS&logoColor=white" alt="ELB">
+- <img src="https://img.shields.io/badge/AWS%20EC2-FF9900?style=flat-square&logo=Amazon%20EC2&logoColor=white" alt="EC2">
+- <img src="https://img.shields.io/badge/AWS%20ECR-FF9900?style=flat-square&logo=Amazon%20ECR&logoColor=white" alt="ECR">
+- <img src="https://img.shields.io/badge/AWS%20SSM%20Parameter%20Store-007C89?style=flat-square&logo=Amazon%20AWS&logoColor=white" alt="Parameter Store">
+- <img src="https://img.shields.io/badge/AWS%20OpenSearch-527FFF?style=flat-square&logo=Amazon%20OpenSearch&logoColor=white" alt="OpenSearch">
 - <img src="https://img.shields.io/badge/AWS%20Lambda-FF9900?style=flat-square&logo=AWS%20Lambda&logoColor=white" alt="Lambda">
 - <img src="https://img.shields.io/badge/AWS%20ElastiCache-527FFF?style=flat-square&logo=Amazon%20ElastiCache&logoColor=white" alt="ElastiCache">
-     
+- <img src="https://img.shields.io/badge/AWS%20VPC-232F3E?style=flat-square&logo=Amazon%20AWS&logoColor=white" alt="VPC">
 
+
+#### * 도메인등록
+- <img src="https://img.shields.io/badge/Route%2053-527FFF?style=flat-square&logo=Amazon%20Route%2053&logoColor=white" alt="Route 53">
+#### * 모니터링
+- <img src="https://img.shields.io/badge/AWS%20CloudWatch-FF4F8B?style=flat-square&logo=Amazon%20AWS&logoColor=white" alt="AWS CloudWatch">
+#### * 보안
+- <img src="https://img.shields.io/badge/AWS%20Certificate%20Manager-FF4C4C?style=flat-square&logo=Amazon%20AWS&logoColor=white" alt="AWS Certificate Manager">
+- <img src="https://img.shields.io/badge/AWS%20IAM-232F3E?style=flat-square&logo=Amazon%20AWS&logoColor=white" alt="AWS IAM">
+
+---
 
 ### DataBase
 - <img src="https://img.shields.io/badge/Amazon%20RDS-527FFF?style=flat-square&logo=Amazon%20RDS&logoColor=white" alt="Amazon RDS">
 - <img src="https://img.shields.io/badge/DynamoDB-4053D6?style=flat-square&logo=Amazon%20DynamoDB&logoColor=white" alt="DynamoDB">
 - <img src="https://img.shields.io/badge/PostgreSQL-336791?style=flat-square&logo=PostgreSQL&logoColor=white" alt="PostgreSQL">
 
-
+---
 
 ### 배포
 - <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=flat-square&logo=Amazon%20S3&logoColor=white" alt="Amazon S3">
 - <img src="https://img.shields.io/badge/CloudFront-527FFF?style=flat-square&logo=Amazon%20CloudFront&logoColor=white" alt="CloudFront">
 
+![image](https://github.com/user-attachments/assets/1fadb599-af05-4697-b066-1eca973ed42a)
 
-### 도메인 등록 / SSL 인증
-- <img src="https://img.shields.io/badge/Route%2053-527FFF?style=flat-square&logo=Amazon%20Route%2053&logoColor=white" alt="Route 53">
-- <img src="https://img.shields.io/badge/AWS%20Certificate%20Manager-FF4C4C?style=flat-square&logo=Amazon%20AWS&logoColor=white" alt="AWS Certificate Manager">
-
-
+---
 
 ### 목업 및 UI/UX 기획
 - <img src="https://img.shields.io/badge/Figma-F24E1E?style=flat-square&logo=Figma&logoColor=white" alt="Figma">
 
+---
 
+### 협업 도구
+- <img src="https://img.shields.io/badge/Jira-0052CC?style=flat-square&logo=Jira&logoColor=white" alt="Jira">
+- <img src="https://img.shields.io/badge/KakaoTalk-FFCD00?style=flat-square&logo=KakaoTalk&logoColor=black" alt="KakaoTalk">
+- <img src="https://img.shields.io/badge/Slack-4A154B?style=flat-square&logo=Slack&logoColor=white" alt="Slack">
+- <img src="https://img.shields.io/badge/GitHub-181717?style=flat-square&logo=GitHub&logoColor=white" alt="GitHub">
+
+---
+
+## 🎯 시연 영상
+https://youtu.be/FBUFNmD7Cwc
 
 
 ## 🎯 주요 기능
