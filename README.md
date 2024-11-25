@@ -7,8 +7,8 @@
 * 사용자 중심 서비스 제공: 사용자에게 편리한 식당 검색 및 예약 서비스를 제공합니다.
 
 ## 🎯 기술 스택 
-//<h3 align="center">📚 Tech Stack 📚</h3>
-//<p align="center">
+<h3 align="center">📚 기술 스택 📚</h3>
+<p align="center">
   * 프론트엔드
   <img src="https://img.shields.io/badge/React-61DAFB?style=flat-square&logo=React&logoColor=white"/>&nbsp;
   <img src="https://img.shields.io/badge/JavaScript-ES6+-F7DF1E?style=flat-square&logo=JavaScript&logoColor=black"/>&nbsp;
@@ -19,6 +19,11 @@
   <img src="https://img.shields.io/badge/Spring%20Boot-6DB33F?style=flat-square&logo=Spring%20Boot&logoColor=white"/>&nbsp;
   <img src="https://img.shields.io/badge/Spring%20Security-6DB33F?style=flat-square&logo=Spring%20Security&logoColor=white"/>&nbsp;
   <img src="https://img.shields.io/badge/RESTful%20API-000000?style=flat-square&logo=RESTful-API&logoColor=white"/>&nbsp;
+
+## 🎯 주요 기능 
+
+
+
  
 
 
