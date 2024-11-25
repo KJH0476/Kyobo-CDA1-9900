@@ -21,7 +21,7 @@
 - <img src="https://img.shields.io/badge/RESTful%20API-000000?style=flat-square&logo=RESTful-API&logoColor=white"/>
 
 ### 인프라
-- <img src="https://img.shields.io/badge/AWS%20ECS-FF9900?style=flat-square&logo=Amazon%20ECS&logoColor=white"ECS/>
+- <img src="https://img.shields.io/badge/AWS%20ECS-FF9900?style=flat-square&logo=Amazon%20ECS&logoColor=white"/>
 - <img src="https://img.shields.io/badge/AWS%20ELB-FF9900?style=flat-square&logo=Elastic-Load-Balancer&logoColor=white" alt="ELB">
 - <img src="https://img.shields.io/badge/AWS%20Lambda-FF9900?style=flat-square&logo=AWS%20Lambda&logoColor=white" alt="Lambda">
 - <img src="https://img.shields.io/badge/AWS%20ElastiCache-527FFF?style=flat-square&logo=Amazon%20ElastiCache&logoColor=white" alt="ElastiCache">
