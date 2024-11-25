@@ -21,6 +21,11 @@ public class SearchController {
 
     private final SearchService searchService;
 
+    @GetMapping("/region")
+    public String region() {
+        return "us";
+    }
+
     @GetMapping("/restaurants")
     public ResponseEntity<SearchResponseDto> search(
             @RequestParam(value = "restaurant_name", required = false) String restaurantName,

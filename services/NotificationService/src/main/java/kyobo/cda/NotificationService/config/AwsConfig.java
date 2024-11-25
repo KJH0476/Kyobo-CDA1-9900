@@ -15,7 +15,6 @@ public class AwsConfig {
     public SesClient sesClient() {
         return SesClient.builder()
                 .region(region)
-                .credentialsProvider(ProfileCredentialsProvider.create("ses-profile"))
                 .build();
     }
 }
