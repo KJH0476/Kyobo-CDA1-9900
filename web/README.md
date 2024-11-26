@@ -71,3 +71,6 @@
 ![image](https://github.com/user-attachments/assets/d25a6456-29e1-4af7-9042-a2560a5fe460)
 
 
+## 🎯 시연 영상
+
+[![시연 영상](https://img.youtube.com/vi/FBUFNmD7Cwc/0.jpg)](https://youtu.be/FBUFNmD7Cwc)
