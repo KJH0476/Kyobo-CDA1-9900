@@ -20,6 +20,14 @@ public class LoginController {
 
     private final LoginService loginService;
 
+    /**
+     * 로그인 요청 컨트롤러이다.
+     * 로그인 요청을 처리하고, 결과를 반환한다.
+     *
+     * @param loginRequestDto
+     * @param bindingResult
+     * @return ResponseEntity<LoginResponseDto> 로그인 결과 반환
+     */
     @PostMapping("/login")
     public ResponseEntity<LoginResponseDto> login(@Validated @RequestBody LoginRequestDto loginRequestDto, BindingResult bindingResult) {
 

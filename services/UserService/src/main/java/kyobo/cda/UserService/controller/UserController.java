@@ -22,7 +22,14 @@ public class UserController {
 
     private final UserService userService;
 
-    // 회원가입
+    /**
+     * 회원가입 요청 컨트롤러이다.
+     * 회원가입 요청을 처리하고, 결과를 반환한다.
+     *
+     * @param userSignUpRequestDto 회원가입 요청 정보
+     * @param bindingResult 바인딩 결과
+     * @return ResponseEntity<UserSignUpResponseDto> 회원가입 결과 반환
+     */
     @PostMapping("/signup")
     public ResponseEntity<UserSignUpResponseDto> registerUser(@Validated @RequestBody UserSignUpRequestDto userSignUpRequestDto, BindingResult bindingResult) {
 
@@ -45,20 +52,40 @@ public class UserController {
                 .build(), HttpStatus.CREATED);
     }
 
-    // 사용자 정보 조회
+    /**
+     * 사용자 정보 조회 컨트롤러이다.
+     * 사용자 정보를 조회하고, 결과를 반환한다.
+     *
+     * @param userId 사용자 ID
+     * @return ResponseEntity<UserDto> 사용자 정보 반환
+     */
     @GetMapping("/find/{userId}")
     public ResponseEntity<UserDto> getUser(@PathVariable UUID userId) {
         UserDto userDto = userService.getUserById(userId);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
-    // 사용자 정보 업데이트
+    /**
+     * 사용자 정보 수정 컨트롤러이다.
+     * 사용자 정보를 수정하고, 결과를 반환한다.
+     *
+     * @param userId 사용자 ID
+     * @param request 사용자 정보 수정 요청 정보
+     * @return ResponseEntity<UserDto> 사용자 정보 수정 결과 반환
+     */
     @PutMapping("/update/{userId}")
     public ResponseEntity<UserDto> updateUser(@PathVariable UUID userId, @RequestBody UserUpdateRequestDto request) {
         UserDto userDto = userService.updateUser(userId, request);
         return new ResponseEntity<>(userDto, HttpStatus.OK);
     }
 
+    /**
+     * 에러 처리 핸들러이다.
+     * IllegalArgumentException 예외를 처리하고, 결과를 반환한다.
+     *
+     * @param e IllegalArgumentException 예외
+     * @return ResponseEntity<UserSignUpResponseDto> 에러 처리 결과 반환
+     */
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<UserSignUpResponseDto> handleIllegalArgumentException(IllegalArgumentException e) {
         return new ResponseEntity<>(UserSignUpResponseDto.builder()

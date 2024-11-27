@@ -26,6 +26,12 @@ public class NotificationService {
     private final SesClient sesClient;
     private final SpringTemplateEngine springTemplateEngine;
 
+    /**
+     * 예약 확정 이메일 전송 메서드이다.
+     *
+     * @param reservationRequestDto 예약 확정 정보
+     * @return CompletableFuture<String> 이메일 전송 결과
+     */
     @Async
     public CompletableFuture<String> sendReservationConfirmEmail(ReservationRequestDto reservationRequestDto) {
         String subject = "예약 확정";
@@ -41,6 +47,12 @@ public class NotificationService {
         return sendEmail(context, subject, templateName);
     }
 
+    /**
+     * 예약 취소 이메일 전송 메서드이다.
+     *
+     * @param reservationRequestDto 예약 취소 정보
+     * @return CompletableFuture<String> 이메일 전송 결과
+     */
     @Async
     public CompletableFuture<String> sendReservationCancelEmail(ReservationRequestDto reservationRequestDto) {
         String subject = "예약 취소";
@@ -55,6 +67,12 @@ public class NotificationService {
         return sendEmail(context, subject, templateName);
     }
 
+    /**
+     * 예약 대기자들에게 알림을 전송하는 메서드이다.
+     *
+     * @param waitListDtoList 예약 대기자 정보 리스트
+     * @return CompletableFuture<String> 이메일 전송 결과
+     */
     @Async
     public CompletableFuture<String> sendWaitingReservationEmail(List<WaitListDto> waitListDtoList) {
         String subject = "예약 대기";
@@ -70,6 +88,14 @@ public class NotificationService {
         return CompletableFuture.completedFuture("예약 대기자들에게 알림 전송 완료");
     }
 
+    /**
+     * 이메일을 전송하는 메서드이다.
+     *
+     * @param context 이메일 템플릿에 전달할 데이터
+     * @param subject 이메일 제목
+     * @param templateName 이메일 템플릿 이름
+     * @return CompletableFuture<String> 이메일 전송 결과
+     */
     private CompletableFuture<String> sendEmail(Context context, String subject, String templateName) {
         String userEmail = context.getVariable("email").toString();
         String emailContent = springTemplateEngine.process(templateName, context);

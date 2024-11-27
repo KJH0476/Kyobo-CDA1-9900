@@ -26,6 +26,17 @@ public class SearchController {
         return "us";
     }
 
+    /**
+     * 식당 검색 컨트롤러이다.
+     * 식당을 검색하고, 결과를 반환한다.
+     * 식당명, 음식 종류, 주소를 검색 조건으로 받아 검색한다.
+     *
+     * @param restaurantName 식당명
+     * @param foodType 음식 유형
+     * @param address 주소
+     * @param searchAfter OpenSearch SearchAfter 파라미터
+     * @return ResponseEntity<SearchResponseDto> 식당 검색 결과 반환
+     */
     @GetMapping("/restaurants")
     public ResponseEntity<SearchResponseDto> search(
             @RequestParam(value = "restaurant_name", required = false) String restaurantName,

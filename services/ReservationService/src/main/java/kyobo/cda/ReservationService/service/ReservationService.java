@@ -33,6 +33,13 @@ public class ReservationService {
     private final RestaurantAvailabilityRepository restaurantAvailabilityRepository;
     private final WaitListRepository waitListRepository;
 
+    /**
+     * 사용자의 예약을 생성하는 메서드이다.
+     * 사용자의 예약을 생성하고, 생성된 예약 정보를 반환한다.
+     *
+     * @param request 예약 생성 요청 정보
+     * @return ReservationDto 생성된 예약 정보 반환
+     */
     @Transactional
     public ReservationDto createReservation(ReservationRequestDto request) {
         // 중복 예약 확인
@@ -66,8 +73,10 @@ public class ReservationService {
                 .numberOfGuests(request.getNumberOfGuests())
                 .build();
 
+        // 예약 정보 저장
         reservationRepository.save(reservation);
 
+        // 예약 정보 저장 성공 시 Notification 서버로 예약 정보 전송
         ResponseEntity<String> response = sendNotification(reservation, "/notification/confirm");
         log.info("Notification 서버로 예약 생성 요청 완료, 응답: {}", response.getBody());
 
@@ -81,12 +90,20 @@ public class ReservationService {
                 .build();
     }
 
-    // 예약 취소 메서드
+    /**
+     * 사용자의 예약을 취소하는 메서드이다.
+     * 사용자의 예약을 취소하고, 취소된 예약 정보를 반환한다.
+     *
+     * @param reservationId 예약 ID
+     */
     @Transactional
     public void cancelReservation(UUID reservationId) {
+
+        // 예약 정보 조회
         Reservation reservation = reservationRepository.findById(reservationId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 예약을 찾을 수 없습니다."));
 
+        // 예약 가능 시간대 조회, 예약 가능 테이블 증가
         RestaurantAvailability availability = restaurantAvailabilityRepository.findByRestaurantIdAndReservationDateAndReservationTime(
                         reservation.getRestaurantId(), reservation.getReservationDateTime().toLocalDate(), reservation.getReservationDateTime().toLocalTime())
                 .map(restaurantAvailability -> {
@@ -95,10 +112,11 @@ public class ReservationService {
                     return restaurantAvailabilityRepository.save(restaurantAvailability);
                 }).orElseThrow(() -> new IllegalArgumentException("해당 예약 시간을 찾을 수 없습니다."));
 
-        // 예약 삭제
+        // 예약 정보 삭제
         reservationRepository.deleteById(reservationId);
         log.info("예약이 삭제되었습니다. 예약 ID: {}", reservationId);
 
+        // 예약 정보 삭제 성공 시 Notification 서버로 예약 정보 전송
         ResponseEntity<String> response = sendNotification(reservation, "/notification/cancel");
         log.info("Notification 서버로 예약 취소 요청 완료, 응답: {}", response.getBody());
 
@@ -118,8 +136,10 @@ public class ReservationService {
                         .build());
             }
 
+            // 대기 중인 사용자에게 Notification 서버로 새로운 예약 가능 알림 전송
             ResponseEntity<String> waitingNotificationResponse = sendWaitingNotification(waitingInfoList);
 
+            // 기존 대기 목록 삭제
             waitListRepository.deleteAll(waitListEntries);
         } else {
             log.info("해당 시간에 대기 중인 사용자가 없습니다.");
@@ -127,8 +147,17 @@ public class ReservationService {
         log.info("예약 취소 완료: {}", reservationId);
     }
 
+    /**
+     * 사용자의 예약 내역을 조회하는 메서드이다.
+     * 사용자의 이메일로 예약 내역을 조회하고, 조회된 예약 정보를 반환한다.
+     *
+     * @param email 사용자 이메일
+     * @return List<ReservationDto> 사용자의 예약 정보 반환
+     */
     @Transactional
     public List<ReservationDto> getReservationsByEmail(String email) {
+
+        // 사용자의 모든 예약 정보 조회
         List<Reservation> reservations = reservationRepository.findByUserEmail(email);
 
         if (reservations.isEmpty()) {
@@ -149,9 +178,17 @@ public class ReservationService {
                 }).toList();
     }
 
-    // 예약 가능 시간대 조회
+    /**
+     * 식당 예약 가능 시간대를 조회하는 메서드이다.
+     * 사용자가 예약 가능한 시간대를 조회하고, 조회된 식당의 예약 가능 시간대 정보를 반환한다.
+     *
+     * @param restaurantId 레스토랑 ID
+     * @return List<AvailabilityTimeDto> 식당의 예약 가능 시간대 정보 반환
+     */
     @Transactional
     public List<AvailabilityTimeDto> getAvailableTime(UUID restaurantId) {
+
+        // 해당 restaurantId의 예약 가능 시간대 조회
         List<RestaurantAvailability> availabilities = restaurantAvailabilityRepository.findByRestaurantId(restaurantId);
 
         if(availabilities.isEmpty()) {
@@ -171,7 +208,13 @@ public class ReservationService {
                 }).toList();
     }
 
-    // 예약 시간에 대기 등록 메서드
+    /**
+     * 예약 대기를 등록하는 메서드이다.
+     * 사용자의 예약 대기를 등록하고, 등록된 대기 정보를 반환한다.
+     *
+     * @param request 예약 대기 등록 요청 정보
+     * @return WaitListDto 등록된 대기 정보 반환
+     */
     @Transactional
     public WaitListDto registerWaitList(ReservationRequestDto request) {
         // 해당 restaurantId와 시간으로 예약 가능 여부를 확인
@@ -204,6 +247,13 @@ public class ReservationService {
         }
     }
 
+    /**
+     * Notification 서버로 예약 확정, 취소 정보를 전송하는 메서드이다.
+     *
+     * @param reservation 예약 정보
+     * @param path Notification 서버로 전송할 경로
+     * @return ResponseEntity<String> Notification 서버로 전송한 결과 반환
+     */
     private ResponseEntity<String> sendNotification(Reservation reservation, String path) {
         // 예약 생성 시 Notification 서버로 예약 정보 전송
         HttpHeaders headers = new HttpHeaders();
@@ -219,6 +269,12 @@ public class ReservationService {
         return restTemplate.exchange(notificationServerUrl+path, HttpMethod.POST, entity, String.class);
     }
 
+    /**
+     * Notification 서버로 대기 정보 전송하는 메서드이다.
+     *
+     * @param waitingInfoList 대기중인 사용자 리스트
+     * @return ResponseEntity<String> Notification 서버로 전송한 결과 반환
+     */
     private ResponseEntity<String> sendWaitingNotification(List<WaitListDto> waitingInfoList) {
 
         HttpHeaders headers = new HttpHeaders();

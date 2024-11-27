@@ -85,6 +85,14 @@ public class UserService {
         return true;
     }
 
+    /**
+     * 사용자 정보를 업데이트하는 메서드이다.
+     * 입력된 사용자 ID와 업데이트 정보를 이용하여 사용자 정보를 업데이트하고 업데이트된 사용자 정보를 반환한다.
+     *
+     * @param id
+     * @param request
+     * @return UserDto 업데이트된 사용자 정보 반환
+     */
     @Transactional
     public UserDto updateUser(UUID id, UserUpdateRequestDto request) {
         User user = userRepository.findById(id)
