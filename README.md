@@ -121,4 +121,5 @@
 
 ## 📅 진행기간
 - `2024.10.28` ~ `2024.12.02`(5주)
+<p align="center"><img src="img/project_timeline.png" alt="WBS 타임라인" width="800"></p>
 
