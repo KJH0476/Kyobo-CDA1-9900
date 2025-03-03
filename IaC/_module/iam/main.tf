@@ -202,6 +202,12 @@ resource "aws_iam_role_policy" "stream_watch_trigger_policy" {
   policy = data.aws_iam_policy_document.stream_watch_trigger_policy_doc.json
 }
 
+resource "aws_iam_policy_attachment" "lambda_vpc_access" {
+  name       = "lambda_vpc_access_attach"
+  roles      = [aws_iam_role.lambda_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaVPCAccessExecutionRole"
+}
+
 data "aws_iam_policy_document" "es_access_policy_doc" {
   statement {
     effect    = "Allow"
