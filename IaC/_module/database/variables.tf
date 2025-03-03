@@ -43,6 +43,11 @@ variable "user_db_instance_type" {
   description = "Instance type for the user database"
 }
 
+variable "user_db_name" {
+  type        = string
+  description = "Name for the user database"
+}
+
 variable "user_db_username" {
   type        = string
   description = "Username for the user database"
@@ -56,6 +61,11 @@ variable "user_db_password" {
 variable "resv_db_instance_type" {
   type        = string
   description = "Instance type for the reservation database"
+}
+
+variable "resv_db_name" {
+  type        = string
+  description = "Name for the reservation database"
 }
 
 variable "resv_db_username" {

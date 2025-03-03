@@ -23,7 +23,7 @@ resource "aws_db_instance" "user_db" {
   engine                 = "postgres"                # 데이터베이스 엔진 (예: mysql, postgres, mariadb 등)
   engine_version         = "16.4"                    # 엔진 버전
   instance_class         = var.user_db_instance_type # 인스턴스 클래스 (용량, 성능에 따라 선택)
-  db_name                = "users"                   # 생성할 데이터베이스 이름
+  db_name                = var.user_db_name          # 생성할 데이터베이스 이름
   username               = var.user_db_username      # DB 사용자명 (변수 또는 민감 정보를 저장하는 방법 사용 권장)
   password               = var.user_db_password      # DB 비밀번호 (Terraform의 sensitive 변수나 별도 secret 관리 방식 권장)
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
@@ -42,7 +42,7 @@ resource "aws_rds_cluster" "resv_db_cluster" {
   engine                 = "aurora-postgresql"
   engine_version         = "16.4"
   availability_zones     = var.availability_zones
-  database_name          = "reservations"
+  database_name          = var.resv_db_name
   master_username        = var.resv_db_username
   master_password        = var.resv_db_password
   db_subnet_group_name   = aws_db_subnet_group.db_subnet_group.name
