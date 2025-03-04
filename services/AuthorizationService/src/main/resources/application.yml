@@ -23,12 +23,6 @@ spring:
                 allowedRoles:
                   - USER
                   - ADMIN
-        - id: notification_service
-          uri: ${NOTIFICATION_SERVICE_URI}
-          predicates:
-            - Path=/notification/**
-          filters:
-            - StripPrefix=1
         - id: search_service
           uri: ${SEARCH_SERVICE_URI}
           predicates:
