@@ -28,9 +28,9 @@ variable "account_id" {
   description = "AWS account ID"
 }
 
-variable "key_user_arn" {
+variable "kms_key_arn" {
   type        = string
-  description = "IAM user ARN for the KMS key"
+  description = "KMS key ARN for SSM parameters"
 }
 
 variable "domain_name" {
