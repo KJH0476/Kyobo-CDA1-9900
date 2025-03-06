@@ -38,7 +38,7 @@ resource "aws_kms_key_policy" "secret_key_policy" {
         "Sid": "AllowECSTaskExecutionRoleDecrypt",
         "Effect": "Allow",
         "Principal": {
-          "AWS": "arn:aws:iam::${var.account_id}:role/dev-apn2-ecs-exec-role"
+          "AWS": var.ecs_task_execution_role_arn
         },
         "Action": "kms:Decrypt",
         "Resource": "*"

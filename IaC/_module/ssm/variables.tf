@@ -13,27 +13,7 @@ variable "ssm_parameters" {
   type        = map(string)
 }
 
-variable "ses_emails" {
-  type = list(string)
-  default = [
-    "sender1@example.com",
-    "sender2@example.com",
-    "sender3@example.com"
-  ]
-  description = "List of SES emails to create"
-}
-
-variable "account_id" {
-  type        = string
-  description = "AWS account ID"
-}
-
 variable "kms_key_arn" {
   type        = string
   description = "KMS key ARN for SSM parameters"
-}
-
-variable "domain_name" {
-  type        = string
-  description = "Domain name for the ACM certificate"
 }

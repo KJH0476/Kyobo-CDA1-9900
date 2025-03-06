@@ -8,12 +8,17 @@ variable "region_prefix" {
   description = "AWS region prefix"
 }
 
-variable "ecs_task_execution_role_arn" {
+variable "root_domain_name" {
   type        = string
-  description = "IAM role ARN for ECS task execution"
+  description = "Domain name"
 }
 
-variable "key_user_arn" {
+variable "route53_zone_id" {
   type        = string
-  description = "IAM user ARN for the KMS key"
+  description = "Route53 zone ID"
+}
+
+variable "ses_emails" {
+  type = list(string)
+  description = "List of SES emails to create"
 }
