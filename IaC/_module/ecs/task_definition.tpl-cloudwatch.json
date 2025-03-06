@@ -1,0 +1,34 @@
+[
+  {
+    "name": "${container_name}",
+    "image": "${image_uri}",
+    "cpu": 0,
+    "portMappings": [
+      {
+        "name": "${port_name}",
+        "containerPort": ${container_port},
+        "hostPort": ${host_port},
+        "protocol": "tcp",
+        "appProtocol": "http"
+      }
+    ],
+    "essential": true,
+    "environment": [],
+    "mountPoints": [],
+    "volumesFrom": [],
+    "secrets": ${service_secrets},
+    "logConfiguration": {
+      "logDriver": "awslogs",
+      "options": {
+        "awslogs-group": "/ecs/test/${container_name}",
+        "mode": "non-blocking",
+        "awslogs-create-group": "true",
+        "max-buffer-size": "25m",
+        "awslogs-region": "ap-northeast-2",
+        "awslogs-stream-prefix": "ecs"
+      },
+      "secretOptions": []
+    },
+    "systemControls": []
+  }
+]
