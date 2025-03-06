@@ -77,17 +77,19 @@ resource "aws_rds_cluster_instance" "resv_db_cluster_instances" {
 }
 
 resource "aws_elasticache_replication_group" "redis_cluster" {
-  replication_group_id       = "${var.environment}-${var.region_prefix}-redis-cluster" # 고유 식별자 (소문자, 숫자, 하이픈만 사용)
-  engine                     = "redis"
-  engine_version             = "7.1"                   # 사용하고자 하는 Redis 버전
-  node_type                  = var.cache_instance_type # 캐시 노드 인스턴스 타입 (필요에 따라 조정)
-  port                       = var.cache_port          # 캐시 포트
-  num_cache_clusters         = 2                       # 마스터 노드 + 복제본 수 (총 2개의 노드)
-  automatic_failover_enabled = true                    # 자동 장애 조치 활성화
-  subnet_group_name          = aws_elasticache_subnet_group.cache_subnet_group.name
-  security_group_ids         = var.cache_security_group_ids # 실제 보안 그룹 ID로 변경
-  transit_encryption_enabled = true                         # 전송 암호화 활성화
-  description                = "Redis replication group"
+  replication_group_id        = "${var.environment}-${var.region_prefix}-redis-cluster" # 고유 식별자 (소문자, 숫자, 하이픈만 사용)
+  preferred_cache_cluster_azs = var.availability_zones
+  multi_az_enabled            = true
+  engine                      = "redis"
+  engine_version              = "7.1"                   # 사용하고자 하는 Redis 버전
+  node_type                   = var.cache_instance_type # 캐시 노드 인스턴스 타입 (필요에 따라 조정)
+  port                        = var.cache_port          # 캐시 포트
+  num_cache_clusters          = 2                       # 마스터 노드 + 복제본 수 (총 2개의 노드)
+  automatic_failover_enabled  = true                    # 자동 장애 조치 활성화
+  subnet_group_name           = aws_elasticache_subnet_group.cache_subnet_group.name
+  security_group_ids          = var.cache_security_group_ids # 실제 보안 그룹 ID로 변경
+  transit_encryption_enabled  = true                         # 전송 암호화 활성화
+  description                 = "Redis replication group"
 
   tags = {
     Name = "${var.environment}-${var.region_prefix}-redis-cluster"
