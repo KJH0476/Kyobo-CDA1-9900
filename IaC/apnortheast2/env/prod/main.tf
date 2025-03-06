@@ -1,9 +1,9 @@
-data "aws_caller_identity" "current_user" {}
+## (기존) network → iam → db → config → lb → app → web 순서로 생성
+## (수정1) network → kms → iam → db → config → bastion(선택) → lb → lambda → ecs_cluster → ecs → web 순서로 생성
+## (수정2) network → common → kms → iam → db → config → lb → bastion → lambda → ecs → Web
+## (수정2) network, route53(호스트 영역 생성, common 에서 분리) → common → kms → iam → db → config → lb → bastion → lambda → ecs → Web
 
-data "aws_route53_zone" "selected" {
-  name         = var.root_domain_name
-  private_zone = false
-}
+data "aws_caller_identity" "current_user" {}
 
 module "network" {
   source = "../../../_module/network"
@@ -25,14 +25,23 @@ module "network" {
   rds_port                = var.rds_port
 }
 
+module "route53" {
+  source = "../../../_module/route53"
+
+  environment      = var.environment
+  root_domain_name = var.root_domain_name
+}
+
 module "common" {
   source = "../../../_module/common"
 
   region_prefix         = var.region_prefix
   environment           = var.environment
   root_domain_name      = var.root_domain_name
-  route53_zone_id        = data.aws_route53_zone.selected.zone_id
+  route53_zone_id        = module.route53.route53_hosted_zone_id
   ses_emails    = var.ses_emails
+
+  depends_on = [module.route53]
 }
 
 module "kms" {
@@ -131,7 +140,7 @@ module "load_balancer" {
   service_port                     = var.service_port
   vpc_id                           = module.network.vpc_id
   alb_record_name                  = var.alb_record_name
-  route53_hosted_zone_id           = data.aws_route53_zone.selected.zone_id
+  route53_hosted_zone_id           = module.route53.route53_hosted_zone_id
 
   depends_on = [module.network, module.common]
 }

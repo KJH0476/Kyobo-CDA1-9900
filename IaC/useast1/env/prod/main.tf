@@ -1,8 +1,14 @@
 ## (기존) network → iam → db → config → lb → app → web 순서로 생성
 ## (수정1) network → kms → iam → db → config → bastion(선택) → lb → lambda → ecs_cluster → ecs → web 순서로 생성
 ## (수정2) network → common → kms → iam → db → config → lb → bastion → lambda → ecs → Web
+## (수정2) network, route53(호스트 영역 생성, common 에서 분리) → common → kms → iam → db → config → lb → bastion → lambda → ecs → Web
 
 data "aws_caller_identity" "current_user" {}
+
+data "aws_route53_zone" "selected" {
+  name         = var.root_domain_name
+  private_zone = false
+}
 
 module "network" {
   source = "../../../_module/network"
@@ -30,6 +36,8 @@ module "common" {
   region_prefix         = var.region_prefix
   environment           = var.environment
   root_domain_name      = var.root_domain_name
+  route53_zone_id        = data.aws_route53_zone.selected.zone_id
+  ses_emails    = var.ses_emails
 }
 
 module "kms" {
@@ -91,12 +99,11 @@ module "database" {
   depends_on = [module.network]
 }
 
-module "config" {
+module "ssm" {
   source = "../../../_module/ssm"
 
   region_prefix = var.region_prefix
   environment   = var.environment
-  ses_emails    = var.ses_emails
   kms_key_arn   = module.kms.kms_key_arn
   ssm_parameters = merge(
     var.ssm_parameters,
@@ -129,7 +136,7 @@ module "load_balancer" {
   service_port                     = var.service_port
   vpc_id                           = module.network.vpc_id
   alb_record_name                  = var.alb_record_name
-  route53_hosted_zone_id           = module.common.route53_hosted_zone_id
+  route53_hosted_zone_id           = data.aws_route53_zone.selected.zone_id
 
   depends_on = [module.network, module.common]
 }
@@ -195,7 +202,7 @@ module "ecs" {
   task_role_arn           = local.service_task_roles[each.key]
   lb_target_group_arn     = module.load_balancer.app_external_tg_arn
 
-  depends_on = [module.common, module.config, module.load_balancer]
+  depends_on = [module.common, module.ssm, module.load_balancer]
 }
 
 # 서비스 커넥트 설정을 위해 authorization-service 를 가장 마지막에 생성
@@ -234,6 +241,16 @@ module "ecs_auth_service" {
   depends_on = [module.ecs]
 }
 
+module "web" {
+  source = "../../../_module/web"
+
+  zone_id = data.aws_route53_zone.selected.zone_id
+  account_id = data.aws_caller_identity.current_user.account_id
+  certification_arn_ue1 = module.common.acm_certificate_arn
+  domain_name = "*.${var.root_domain_name}"
+  record_type = "A"
+}
+
 # 로컬 변수 정의
 locals {
   service_security_groups = {
@@ -254,39 +271,39 @@ locals {
 
   service_secrets = {
     authorization_service = {
-      JWT_SECRET_KEY          = module.config.ssm_parameter_arns["JWT_SECRET_KEY"]
-      JWT_ACCESS_EXPIRE_TIME  = module.config.ssm_parameter_arns["JWT_ACCESS_EXPIRE_TIME"]
-      JWT_REFRESH_EXPIRE_TIME = module.config.ssm_parameter_arns["JWT_REFRESH_EXPIRE_TIME"]
-      REDIS_HOST              = module.config.ssm_parameter_arns["REDIS_HOST"]
-      REDIS_PORT              = module.config.ssm_parameter_arns["REDIS_PORT"]
-      USER_SERVICE_URI        = module.config.ssm_parameter_arns["USER_SERVICE_URI"]
-      SEARCH_SERVICE_URI      = module.config.ssm_parameter_arns["SEARCH_SERVICE_URI"]
-      RESERVATION_SERVICE_URI = module.config.ssm_parameter_arns["RESERVATION_SERVICE_URI"]
+      JWT_SECRET_KEY          = module.ssm.ssm_parameter_arns["JWT_SECRET_KEY"]
+      JWT_ACCESS_EXPIRE_TIME  = module.ssm.ssm_parameter_arns["JWT_ACCESS_EXPIRE_TIME"]
+      JWT_REFRESH_EXPIRE_TIME = module.ssm.ssm_parameter_arns["JWT_REFRESH_EXPIRE_TIME"]
+      REDIS_HOST              = module.ssm.ssm_parameter_arns["REDIS_HOST"]
+      REDIS_PORT              = module.ssm.ssm_parameter_arns["REDIS_PORT"]
+      USER_SERVICE_URI        = module.ssm.ssm_parameter_arns["USER_SERVICE_URI"]
+      SEARCH_SERVICE_URI      = module.ssm.ssm_parameter_arns["SEARCH_SERVICE_URI"]
+      RESERVATION_SERVICE_URI = module.ssm.ssm_parameter_arns["RESERVATION_SERVICE_URI"]
     }
     user_service = {
-      JWT_SECRET_KEY          = module.config.ssm_parameter_arns["JWT_SECRET_KEY"]
-      JWT_SIGNUP_SECRET_KEY   = module.config.ssm_parameter_arns["JWT_SIGNUP_SECRET_KEY"]
-      JWT_ACCESS_EXPIRE_TIME  = module.config.ssm_parameter_arns["JWT_ACCESS_EXPIRE_TIME"]
-      JWT_REFRESH_EXPIRE_TIME = module.config.ssm_parameter_arns["JWT_REFRESH_EXPIRE_TIME"]
-      USER_DATABASE_URL       = module.config.ssm_parameter_arns["USER_DATABASE_URL"]
-      USER_DATABASE_USERNAME  = module.config.ssm_parameter_arns["USER_DATABASE_USERNAME"]
-      USER_DATABASE_PASSWORD  = module.config.ssm_parameter_arns["USER_DATABASE_PASSWORD"]
-      REDIS_HOST              = module.config.ssm_parameter_arns["REDIS_HOST"]
-      REDIS_PORT              = module.config.ssm_parameter_arns["REDIS_PORT"]
+      JWT_SECRET_KEY          = module.ssm.ssm_parameter_arns["JWT_SECRET_KEY"]
+      JWT_SIGNUP_SECRET_KEY   = module.ssm.ssm_parameter_arns["JWT_SIGNUP_SECRET_KEY"]
+      JWT_ACCESS_EXPIRE_TIME  = module.ssm.ssm_parameter_arns["JWT_ACCESS_EXPIRE_TIME"]
+      JWT_REFRESH_EXPIRE_TIME = module.ssm.ssm_parameter_arns["JWT_REFRESH_EXPIRE_TIME"]
+      USER_DATABASE_URL       = module.ssm.ssm_parameter_arns["USER_DATABASE_URL"]
+      USER_DATABASE_USERNAME  = module.ssm.ssm_parameter_arns["USER_DATABASE_USERNAME"]
+      USER_DATABASE_PASSWORD  = module.ssm.ssm_parameter_arns["USER_DATABASE_PASSWORD"]
+      REDIS_HOST              = module.ssm.ssm_parameter_arns["REDIS_HOST"]
+      REDIS_PORT              = module.ssm.ssm_parameter_arns["REDIS_PORT"]
     }
     notification_service = {
-      AWS_SES_SENDER = module.config.ssm_parameter_arns["AWS_SES_SENDER"]
+      AWS_SES_SENDER = module.ssm.ssm_parameter_arns["AWS_SES_SENDER"]
     }
     search_service = {
-      OPENSEARCH_INDEX  = module.config.ssm_parameter_arns["OPENSEARCH_INDEX"]
-      OPENSEARCH_HOST   = module.config.ssm_parameter_arns["OPENSEARCH_HOST"]
-      OPENSEARCH_REGION = module.config.ssm_parameter_arns["OPENSEARCH_REGION"]
+      OPENSEARCH_INDEX  = module.ssm.ssm_parameter_arns["OPENSEARCH_INDEX"]
+      OPENSEARCH_HOST   = module.ssm.ssm_parameter_arns["OPENSEARCH_HOST"]
+      OPENSEARCH_REGION = module.ssm.ssm_parameter_arns["OPENSEARCH_REGION"]
     }
     reservation_service = {
-      NOTIFICATION_SERVICE_URI      = module.config.ssm_parameter_arns["NOTIFICATION_SERVICE_URI"]
-      RESERVATION_DATABASE_URL      = module.config.ssm_parameter_arns["RESERVATION_DATABASE_URL"]
-      RESERVATION_DATABASE_USERNAME = module.config.ssm_parameter_arns["RESERVATION_DATABASE_USERNAME"]
-      RESERVATION_DATABASE_PASSWORD = module.config.ssm_parameter_arns["RESERVATION_DATABASE_PASSWORD"]
+      NOTIFICATION_SERVICE_URI      = module.ssm.ssm_parameter_arns["NOTIFICATION_SERVICE_URI"]
+      RESERVATION_DATABASE_URL      = module.ssm.ssm_parameter_arns["RESERVATION_DATABASE_URL"]
+      RESERVATION_DATABASE_USERNAME = module.ssm.ssm_parameter_arns["RESERVATION_DATABASE_USERNAME"]
+      RESERVATION_DATABASE_PASSWORD = module.ssm.ssm_parameter_arns["RESERVATION_DATABASE_PASSWORD"]
     }
   }
 }

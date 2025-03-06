@@ -13,8 +13,8 @@ output "network_private_subnet_ids" {
   description = "Private subnet IDs from the network module."
 }
 
-output "common_route53_hosted_zone_id" {
-  value       = module.common.route53_hosted_zone_id
+output "route53_hosted_zone_id" {
+  value       = module.route53.route53_hosted_zone_id
   description = "Route53 Hosted Zone ID from the common module."
 }
 
@@ -94,7 +94,7 @@ output "database_restaurant_table_stream_arn" {
 }
 
 output "config_ssm_parameter_arns" {
-  value       = module.config.ssm_parameter_arns
+  value       = module.ssm.ssm_parameter_arns
   description = "Map of SSM Parameter ARNs from the Config module."
 }
 
