@@ -1,19 +1,3 @@
-data "aws_iam_policy_document" "ecs_task_execution_assume_role" {
-  statement {
-    effect    = "Allow"
-    actions   = ["sts:AssumeRole"]
-    principals {
-      type        = "Service"
-      identifiers = ["ecs-tasks.amazonaws.com"]
-    }
-  }
-}
-
-resource "aws_iam_role" "ecs_task_execution" {
-  name               = "${var.environment}-${var.region_prefix}-ecs-exec-role"
-  assume_role_policy = data.aws_iam_policy_document.ecs_task_execution_assume_role.json
-}
-
 data "aws_iam_policy_document" "ecs_exec_policy_doc" {
   statement {
     effect    = "Allow"
@@ -21,23 +5,30 @@ data "aws_iam_policy_document" "ecs_exec_policy_doc" {
       "ssm:GetParameter",
       "ssm:GetParameters",
       "ssm:GetParametersByPath",
-      "ssm:DescribeParameters"
+      "ssm:DescribeParameters",
+      "kms:Decrypt"
     ]
     resources = [
-      "arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/${var.ssm_prefix}/*"
+      "arn:aws:ssm:${var.aws_region}:${var.account_id}:parameter/${var.ssm_prefix}/*",
+      "arn:aws:kms:${var.aws_region}:${var.account_id}:key/${var.kms_key_id}"
     ]
   }
 }
 
 resource "aws_iam_role_policy" "ecs_exec_policy" {
   name   = "${var.environment}-${var.region_prefix}-ecs-exec-policy"
-  role   = aws_iam_role.ecs_task_execution.id
+  role   = var.ecs_task_execution_role_name
   policy = data.aws_iam_policy_document.ecs_exec_policy_doc.json
 }
 
 resource "aws_iam_role_policy_attachment" "ecs_exec_attachment" {
-  role       = aws_iam_role.ecs_task_execution.name
+  role       = var.ecs_task_execution_role_name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy"
+}
+
+resource "aws_iam_role_policy_attachment" "cloudwatch_ecs_exec_attachment" {
+  role       = var.ecs_task_execution_role_name
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
 }
 
 data "aws_iam_policy_document" "notification_task_assume_role" {
