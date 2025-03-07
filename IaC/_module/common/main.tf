@@ -42,7 +42,7 @@ resource "aws_iam_role" "ecs_task_execution" {
 
 # Certificate Manager
 resource "aws_acm_certificate" "acm_certificate" {
-  domain_name       = "*.${var.root_domain_name}"
+  domain_name       = var.root_domain_name
   validation_method = "DNS"
 
   lifecycle {
