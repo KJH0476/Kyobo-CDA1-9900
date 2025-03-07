@@ -22,3 +22,8 @@ variable "record_type" {
   type        = string
   description = "Route53 Record type"
 }
+
+variable "cloudfront_function_path" {
+  type        = string
+  description = "Path to the CloudFront function"
+}

@@ -1,10 +1,10 @@
 output "s3_bucket_name" {
-  value       = aws_s3_bucket.team9900_hosting.bucket
+  value       = aws_s3_bucket.hosting_bucket.bucket
   description = "Name of the S3 hosting bucket"
 }
 
 output "s3_bucket_arn" {
-  value       = aws_s3_bucket.team9900_hosting.arn
+  value       = aws_s3_bucket.hosting_bucket.arn
   description = "ARN of the S3 hosting bucket"
 }
 

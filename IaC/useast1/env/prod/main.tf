@@ -1,7 +1,7 @@
 ## (기존) network → iam → db → config → lb → app → web 순서로 생성
 ## (수정1) network → kms → iam → db → config → bastion(선택) → lb → lambda → ecs_cluster → ecs → web 순서로 생성
-## (수정2) network → common → kms → iam → db → config → lb → bastion → lambda → ecs → Web
-## (수정2) network, route53(호스트 영역 생성, common 에서 분리) → common → kms → iam → db → config → lb → bastion → lambda → ecs → Web
+## (수정2) network → common → kms → iam → db → config → lb → bastion → lambda → ecs → web
+## (수정2) network, route53(호스트 영역 생성, common 에서 분리) → common → kms → iam → db → config → lb → bastion → lambda → ecs → web
 
 data "aws_caller_identity" "current_user" {}
 
@@ -33,11 +33,11 @@ module "network" {
 module "common" {
   source = "../../../_module/common"
 
-  region_prefix         = var.region_prefix
-  environment           = var.environment
-  root_domain_name      = var.root_domain_name
-  route53_zone_id        = data.aws_route53_zone.selected.zone_id
-  ses_emails    = var.ses_emails
+  region_prefix    = var.region_prefix
+  environment      = var.environment
+  root_domain_name = var.root_domain_name
+  route53_zone_id  = data.aws_route53_zone.selected.zone_id
+  ses_emails       = var.ses_emails
 }
 
 module "kms" {
@@ -244,11 +244,14 @@ module "ecs_auth_service" {
 module "web" {
   source = "../../../_module/web"
 
-  zone_id = data.aws_route53_zone.selected.zone_id
-  account_id = data.aws_caller_identity.current_user.account_id
-  certification_arn_ue1 = module.common.acm_certificate_arn
-  domain_name = "*.${var.root_domain_name}"
-  record_type = "A"
+  zone_id                  = data.aws_route53_zone.selected.zone_id
+  account_id               = data.aws_caller_identity.current_user.account_id
+  certification_arn_ue1    = module.common.acm_certificate_arn
+  domain_name              = var.root_domain_name
+  record_type              = "A"
+  cloudfront_function_path = var.cloudfront_function_path
+
+  depends_on = [module.common]
 }
 
 # 로컬 변수 정의

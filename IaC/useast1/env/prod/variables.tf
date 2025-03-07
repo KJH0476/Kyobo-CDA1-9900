@@ -260,3 +260,9 @@ variable "authorization_service_config" {
   })
   description = "Defining ECS and service settings for authorization service"
 }
+
+variable "cloudfront_function_path"{
+  type = string
+  default = "cloudfront_functions/cloudfront_function.js"
+  description = "The path to the cloudfront function"
+}
