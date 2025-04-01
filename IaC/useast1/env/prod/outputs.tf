@@ -108,11 +108,6 @@ output "load_balancer_app_external_tg_arn" {
   description = "Application Load Balancer Target Group ARN from the Load Balancer module."
 }
 
-output "bastion_public_ip" {
-  value       = module.bastion.bastion_public_ip
-  description = "Bastion host public IP from the Bastion module."
-}
-
 output "lambda_function_arn" {
   value       = module.lambda.lambda_function_arn
   description = "Lambda Function ARN from the Lambda module."

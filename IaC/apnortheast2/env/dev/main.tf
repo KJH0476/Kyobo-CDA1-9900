@@ -28,11 +28,11 @@ module "network" {
 module "common" {
   source = "../../../_module/common"
 
-  region_prefix         = var.region_prefix
-  environment           = var.environment
-  root_domain_name      = var.root_domain_name
-  route53_zone_id        = data.aws_route53_zone.selected.zone_id
-  ses_emails    = var.ses_emails
+  region_prefix    = var.region_prefix
+  environment      = var.environment
+  root_domain_name = var.root_domain_name
+  route53_zone_id  = data.aws_route53_zone.selected.zone_id
+  ses_emails       = var.ses_emails
 }
 
 module "kms" {
@@ -137,15 +137,16 @@ module "load_balancer" {
 }
 
 module "bastion" {
-  source = "../../../_module/bastion"
+  source = "../../../_module/ec2"
 
-  aws_region              = var.aws_region
-  environment             = var.environment
-  instance_type           = var.bastion_instance_type
-  public_key_path         = var.public_key_path
-  public_subnets          = module.network.public_subnet_ids
-  bastion_security_groups = [module.network.bastion_sg_id]
-  region_prefix           = var.region_prefix
+  aws_region      = var.aws_region
+  environment     = var.environment
+  instance_type   = var.bastion_instance_type
+  public_key_path = var.public_key_path
+  subnets         = module.network.public_subnet_ids
+  security_groups = [module.network.bastion_sg_id]
+  region_prefix   = var.region_prefix
+  role            = "bastion"
 
   depends_on = [module.network]
 }
