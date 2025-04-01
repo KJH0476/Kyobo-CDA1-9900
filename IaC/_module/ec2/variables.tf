@@ -3,9 +3,9 @@ variable "aws_region" {
   description = "AWS region"
 }
 
-variable "public_subnets" {
+variable "subnets" {
   type        = list(string)
-  description = "List of public subnet IDs"
+  description = "List of subnet IDs"
 }
 
 variable "environment" {
@@ -34,7 +34,12 @@ variable "instance_type" {
   description = "Instance type for the Bastion Instance(EC2)"
 }
 
-variable "bastion_security_groups" {
+variable "security_groups" {
   type        = list(string)
   description = "List of security group IDs for the Bastion Instance(EC2)"
+}
+
+variable "role" {
+  type        = string
+  description = "Role for the Instance(EC2)"
 }
